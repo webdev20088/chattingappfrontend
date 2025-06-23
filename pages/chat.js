@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css';
 
-const socket = io('http://localhost:4000');
+const socket = io('https://mychatappbackend-zzhh.onrender.com');
 
 export default function Chat() {
   const [username, setUsername] = useState('');
@@ -61,7 +61,7 @@ export default function Chat() {
   }, [selectedContact]);
 
   const loadContacts = async () => {
-    const res = await fetch(`http://localhost:4000/contacts/${username}`);
+    const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/contacts/${username}`);
     const data = await res.json();
     setContacts(data);
 
@@ -72,12 +72,12 @@ export default function Chat() {
   };
 
   const fetchMessages = async (contact) => {
-    const res = await fetch(`http://localhost:4000/messages?user1=${username}&user2=${contact}`);
+    const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${contact}`);
     const data = await res.json();
     setMessages(data);
     setSelectedContact(contact);
 
-    const res2 = await fetch(`http://localhost:4000/contacts/${username}`);
+    const res2 = await fetch(`https://mychatappbackend-zzhh.onrender.com/contacts/${username}`);
     const contactList = await res2.json();
     setIsFriend(contactList.some(c => c.contact === contact));
 
@@ -88,7 +88,7 @@ export default function Chat() {
 
   const handleSearch = async () => {
     if (!searchName || searchName === username) return;
-    const res = await fetch(`http://localhost:4000/user/${searchName}`);
+    const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/user/${searchName}`);
     if (!res.ok) {
       alert('No such user.');
       return;
@@ -142,7 +142,7 @@ export default function Chat() {
 
   const addFriend = async () => {
     if (!selectedContact) return;
-    await fetch(`http://localhost:4000/friend/${username}/${selectedContact}`, {
+    await fetch(`https://mychatappbackend-zzhh.onrender.com/friend/${username}/${selectedContact}`, {
       method: 'POST'
     });
     loadContacts();
