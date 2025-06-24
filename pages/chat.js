@@ -163,7 +163,7 @@ const handleRedirect = () => {
     socket.emit('sendMessage', {
       sender: username,
       receiver: selectedContact,
-      message: 'this is the auto generated message he has to go',
+      message: 'this is the auto generated message he/she has to go',
       room: `${username}_${selectedContact}`
     });
 
