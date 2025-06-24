@@ -158,6 +158,9 @@ export default function Chat() {
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
               className={styles.inputBox}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') sendMessage();
+  }}
             />
             <button onClick={handleSearch} className={styles.button}>Search</button>
           </div>
@@ -213,6 +216,9 @@ export default function Chat() {
               onChange={handleTyping}
               placeholder="Type..."
               className={styles.inputBox}
+               onKeyDown={(e) => {
+                if (e.key === 'Enter') sendMessage();
+  }}
             />
             <button onClick={sendMessage} className={styles.button}>Send</button>
             <button onClick={clearChat} className={styles.button}>Clear Chat</button>
