@@ -7,13 +7,13 @@ import { useRouter } from 'next/router';
 
 const socket = io('https://mychatappbackend-zzhh.onrender.com');
 const redirectLinks = [
-  'https://www.doubtnut.com/class-12/physics',
-'https://www.doubtnut.com/class-12/chemistry',
-'https://www.doubtnut.com/class-12/physics/question-bank',
-'https://www.doubtnut.com/class-12/physics/electromagnetic-induction',
-'https://www.doubtnut.com/class-12/physics/alternating-current',
-'https://www.doubtnut.com/class-12/chemistry/solution-chemistry',
-'https://www.doubtnut.com/class-12/chemistry/chemical-kinetics',
+  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/assertion--reason',
+'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/amorphous-and-crystalline-solids',
+'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/assertion-and-reason',
+'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/calculations-involving-unit-cell-dimensions',
+'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/classification-of-crystalline-solids',
+'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/crystalline-and-unit-cells',
+'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/exemplar-problems',
 'https://www.doubtnut.com/class-12/chemistry/organic-chemistry',
 'https://www.doubtnut.com/class-12/chemistry/question-bank',
 'https://www.doubtnut.com/class-12/physics/question-bank/join-quiz'
