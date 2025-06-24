@@ -161,10 +161,11 @@ export default function Chat() {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') sendMessage();
   }}
-            /><br></br>
-            <button onClick={handleSearch} className={styles.button}>Search</button>
+            />
+           
           </div>
           <div className={styles.contactList}>
+             <button onClick={handleSearch} className={styles.button}>Search</button>
             {contacts.map((c) => (
               <div
                 key={c.contact}
