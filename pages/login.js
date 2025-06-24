@@ -1,3 +1,4 @@
+// ✅ FINAL login.js (localhost:4000)
 import { useState } from 'react';
 import styles from '../styles/Login.module.css';
 
@@ -12,12 +13,10 @@ export default function Login() {
       setError('Fill both fields');
       return;
     }
-
     const res = await fetch('https://mychatappbackend-zzhh.onrender.com/login', {
-
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password })
     });
 
     if (res.ok) {

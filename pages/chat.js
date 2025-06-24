@@ -1,8 +1,25 @@
+// ✅ FINAL chat.js (localhost:4000)
 import { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css';
 
+import { useRouter } from 'next/router';
+
 const socket = io('https://mychatappbackend-zzhh.onrender.com');
+const redirectLinks = [
+  'https://www.doubtnut.com/class-12/physics',
+'https://www.doubtnut.com/class-12/chemistry',
+'https://www.doubtnut.com/class-12/physics/question-bank',
+'https://www.doubtnut.com/class-12/physics/electromagnetic-induction',
+'https://www.doubtnut.com/class-12/physics/alternating-current',
+'https://www.doubtnut.com/class-12/chemistry/solution-chemistry',
+'https://www.doubtnut.com/class-12/chemistry/chemical-kinetics',
+'https://www.doubtnut.com/class-12/chemistry/organic-chemistry',
+'https://www.doubtnut.com/class-12/chemistry/question-bank',
+'https://www.doubtnut.com/class-12/physics/question-bank/join-quiz'
+
+];
+
 
 export default function Chat() {
   const [username, setUsername] = useState('');
@@ -13,9 +30,18 @@ export default function Chat() {
   const [message, setMessage] = useState('');
   const [searchName, setSearchName] = useState('');
   const [typing, setTyping] = useState('');
-  const [isFriend, setIsFriend] = useState(false);
   const [maximized, setMaximized] = useState(false);
+  const chatBoxRef = useRef(null);
   const typingTimeout = useRef(null);
+
+  const router = useRouter();
+
+useEffect(() => {
+  const user = localStorage.getItem('username');
+  if (!user) {
+    router.replace('/login');
+  }
+}, []);
 
   useEffect(() => {
     const user = localStorage.getItem('username');
@@ -23,71 +49,65 @@ export default function Chat() {
     else {
       setUsername(user);
       socket.emit('login', user);
-      loadContacts();
     }
 
     socket.on('onlineUsers', (users) => setOnlineUsers(users));
     socket.on('newMessage', (msg) => {
-      if (
-        selectedContact &&
-        (msg.sender === selectedContact || msg.receiver === selectedContact)
-      ) {
+      if (selectedContact && (msg.sender === selectedContact || msg.receiver === selectedContact)) {
         setMessages((prev) => [...prev, msg]);
+        scrollToBottom();
       }
-      loadContacts();
     });
-
     socket.on('typing', ({ sender, isTyping }) => {
-      if (sender === selectedContact) {
-        setTyping(isTyping ? `${sender} is typing...` : '');
-      }
+      if (sender === selectedContact) setTyping(isTyping ? `${sender} is typing...` : '');
     });
-
-    socket.on('cleared', () => {
-      setMessages([]);
-      loadContacts();
+    socket.on('cleared', () => setMessages([]));
+    socket.on('refresh', () => {
+      if (selectedContact) fetchMessages(selectedContact);
     });
-
-    socket.on('refreshContacts', loadContacts);
 
     return () => {
       socket.off('onlineUsers');
       socket.off('newMessage');
       socket.off('typing');
       socket.off('cleared');
-      socket.off('refreshContacts');
+      socket.off('refresh');
     };
   }, [selectedContact]);
 
-  const loadContacts = async () => {
-    const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/contacts/${username}`);
-    const data = await res.json();
-    setContacts(data);
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (chatBoxRef.current) chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }, 100);
   };
 
   const fetchMessages = async (contact) => {
+  try {
     const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${contact}`);
+    if (!res.ok) throw new Error('Failed to fetch messages');
+
     const data = await res.json();
     setMessages(data);
     setSelectedContact(contact);
-    setMaximized(true); // ✅ Expand to full-screen chat
-
-    const res2 = await fetch(`https://mychatappbackend-zzhh.onrender.com/contacts/${username}`);
-    const contactList = await res2.json();
-    setIsFriend(contactList.some(c => c.contact === contact));
+    setMaximized(true);
 
     socket.emit('joinRoom', `${username}_${contact}`);
     socket.emit('joinRoom', `${contact}_${username}`);
     socket.emit('markRead', { user1: username, user2: contact });
-  };
+
+    scrollToBottom();
+  } catch (err) {
+    if (document.visibilityState === 'hidden') return; // user already left page
+    console.error('⚠️ Error fetching messages:', err.message);
+    alert('Something went wrong while loading messages. Please try again or refresh the page.');
+  }
+};
+
 
   const handleSearch = async () => {
     if (!searchName || searchName === username) return;
     const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/user/${searchName}`);
-    if (!res.ok) {
-      alert('No such user.');
-      return;
-    }
+    if (!res.ok) return alert('No such user.');
     fetchMessages(searchName);
     setSearchName('');
   };
@@ -104,28 +124,15 @@ export default function Chat() {
     socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
   };
 
-  const clearChat = () => {
-    socket.emit('clearChat', { user1: username, user2: selectedContact });
-  };
+  const clearChat = () => socket.emit('clearChat', { user1: username, user2: selectedContact });
 
   const handleTyping = (e) => {
     const value = e.target.value;
     setMessage(value);
-
     if (typingTimeout.current) clearTimeout(typingTimeout.current);
-
-    socket.emit('typing', {
-      sender: username,
-      receiver: selectedContact,
-      isTyping: true
-    });
-
+    socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: true });
     typingTimeout.current = setTimeout(() => {
-      socket.emit('typing', {
-        sender: username,
-        receiver: selectedContact,
-        isTyping: false
-      });
+      socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
     }, 1000);
   };
 
@@ -135,21 +142,46 @@ export default function Chat() {
     window.location.href = '/login';
   };
 
-  const addFriend = async () => {
-    if (!selectedContact) return;
-    await fetch(`https://mychatappbackend-zzhh.onrender.com/friend/${username}/${selectedContact}`, {
-      method: 'POST'
+  
+
+  const handleDrive = () => {
+  if (['ditto', 'flora'].includes(username)) {
+    socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+
+    // 👇 Delay so socket emits before redirect
+    setTimeout(() => {
+      window.location.href = 'https://drive.google.com/drive/folders/1yUYVWUZi-m6z5Uy0NrmveN1kkLVvClHY';
+    }, 100);
+  }
+};
+
+ 
+const handleRedirect = () => {
+  if (['ditto', 'flora'].includes(username)) {
+    const link = redirectLinks[Math.floor(Math.random() * redirectLinks.length)];
+
+    socket.emit('sendMessage', {
+      sender: username,
+      receiver: selectedContact,
+      message: 'this is the auto generated message he has to go',
+      room: `${username}_${selectedContact}`
     });
-    loadContacts();
-    setIsFriend(true);
-  };
+
+    socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+
+    // 👇 Delay ensures message is emitted before navigation
+    setTimeout(() => {
+      window.location.href = link;
+    }, 500);
+  }
+};
 
   return (
     <div className={styles.container}>
       {!maximized && (
         <div className={styles.contactSection}>
           <div className={styles.contactHeader}>
-            <h3 className={styles.nametext}>Hi , {username} !</h3>
+            <h3 className={styles.nametext}>Hi, {username}!</h3>
             <button onClick={handleLogout} className={styles.button}>Logout</button>
           </div>
           <div className={styles.searchBar}>
@@ -158,28 +190,9 @@ export default function Chat() {
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
               className={styles.inputBox}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') sendMessage();
-  }}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
             />
-           
-          </div>
-          <div className={styles.contactList}>
-             <button onClick={handleSearch} className={styles.button}>Search</button>
-            {contacts.map((c) => (
-              <div
-                key={c.contact}
-                className={`${styles.contactBox} ${selectedContact === c.contact ? styles.selectedContact : ''}`}
-                onClick={() => fetchMessages(c.contact)}
-              >
-                <b>{c.contact}</b> {onlineUsers.includes(c.contact) ?
-                  <span className={styles.online}>(online)</span> :
-                  <span className={styles.offline}>(offline)</span>}
-                <br />
-                <small>{c.lastMessage}</small><br />
-                <small>{new Date(c.timestamp).toLocaleTimeString()}</small>
-              </div>
-            ))}
+            <button onClick={handleSearch} className={styles.button}>Search</button>
           </div>
         </div>
       )}
@@ -187,17 +200,16 @@ export default function Chat() {
       {selectedContact && (
         <div className={`${styles.chatSection} ${maximized ? styles.maximized : ''}`}>
           <div className={styles.chatHeader}>
-            <button className={styles.button} onClick={() => setMaximized(false)}>⬅</button>
-            <h3 className={styles.nametext}>
-              {selectedContact}
-              {onlineUsers.includes(selectedContact) ?
-                <span className={styles.online}> (online)</span> :
-                <span className={styles.offline}> (offline)</span>}
-            </h3>
+            <button className={styles.button} onClick={() => {
+            
+            window.location.reload();
+          }} >⬅</button>
+            <h3 className={styles.nametext}>{selectedContact} {onlineUsers.includes(selectedContact) ? <span className={styles.online}> (online)</span> : <span className={styles.offline}> (offline)</span>}</h3>
           </div>
+
           <div className={styles.typingText}>{typing}</div>
 
-          <div className={styles.chatBox}>
+          <div className={styles.chatBox} ref={chatBoxRef}>
             {messages.map((m, i) => (
               <div
                 key={i}
@@ -205,7 +217,7 @@ export default function Chat() {
               >
                 <div className={styles.messageContent}>{m.message}</div>
                 <div className={styles.messageMeta}>
-                  <small>{new Date(m.timestamp).toLocaleTimeString()} </small>
+                  <small>{new Date(m.timestamp).toLocaleTimeString()} {m.sender === username ? (m.read ? '✓✓' : '✓') : ''}</small>
                 </div>
               </div>
             ))}
@@ -217,12 +229,12 @@ export default function Chat() {
               onChange={handleTyping}
               placeholder="Type..."
               className={styles.inputBox}
-               onKeyDown={(e) => {
-                if (e.key === 'Enter') sendMessage();
-  }}
+              onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }}
             />
             <button onClick={sendMessage} className={styles.button}>Send</button>
             <button onClick={clearChat} className={styles.button}>Clear Chat</button>
+            <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Drive</button>
+            <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Redirect</button>
           </div>
         </div>
       )}
