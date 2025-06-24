@@ -203,7 +203,8 @@ const handleRedirect = () => {
             <button className={styles.button} onClick={() => {
             
             window.location.reload();
-          }} >⬅</button>
+          }} >⬅</button>   <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Drive</button>
+            <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Redirect</button>
             <h3 className={styles.nametext}>{selectedContact} {onlineUsers.includes(selectedContact) ? <span className={styles.online}> (online)</span> : <span className={styles.offline}> (offline)</span>}</h3>
           </div>
 
@@ -233,8 +234,7 @@ const handleRedirect = () => {
             />
             <button onClick={sendMessage} className={styles.button}>Send</button>
             <button onClick={clearChat} className={styles.button}>Clear Chat</button>
-            <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Drive</button>
-            <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Redirect</button>
+          
           </div>
         </div>
       )}
