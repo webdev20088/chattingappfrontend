@@ -27,7 +27,6 @@ export default function Chat() {
     }
 
     socket.on('onlineUsers', (users) => setOnlineUsers(users));
-
     socket.on('newMessage', (msg) => {
       if (
         selectedContact &&
@@ -64,11 +63,6 @@ export default function Chat() {
     const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/contacts/${username}`);
     const data = await res.json();
     setContacts(data);
-
-    if (data.length && !selectedContact) {
-      setSelectedContact(data[0].contact);
-      fetchMessages(data[0].contact);
-    }
   };
 
   const fetchMessages = async (contact) => {
@@ -76,6 +70,7 @@ export default function Chat() {
     const data = await res.json();
     setMessages(data);
     setSelectedContact(contact);
+    setMaximized(true); // ✅ Expand to full-screen chat
 
     const res2 = await fetch(`https://mychatappbackend-zzhh.onrender.com/contacts/${username}`);
     const contactList = await res2.json();
@@ -177,7 +172,7 @@ export default function Chat() {
                   <span className={styles.online}>(online)</span> :
                   <span className={styles.offline}>(offline)</span>}
                 <br />
-                <small>{c.lastMessage} </small><br />
+                <small>{c.lastMessage}</small><br />
                 <small>{new Date(c.timestamp).toLocaleTimeString()}</small>
               </div>
             ))}
@@ -185,50 +180,45 @@ export default function Chat() {
         </div>
       )}
 
-      <div className={`${styles.chatSection} ${maximized ? styles.maximized : ''}`}>
-        {selectedContact && (
-          <>
-            <div className={styles.chatHeader}>
-              <h3 className={styles.nametext}>
-                {selectedContact} 
-                {onlineUsers.includes(selectedContact) ?
-                  <span className={styles.online}> (online)</span> :
-                  <span className={styles.offline}> (offline)</span>}
-                
-              </h3>
-              <button onClick={() => setMaximized(!maximized)} className={styles.button}>
-                {maximized ? '🗕' : '🗖'}
-              </button>
-            </div>
-            <div className={styles.typingText} >{typing}</div>
-          </>
-        )}
+      {selectedContact && (
+        <div className={`${styles.chatSection} ${maximized ? styles.maximized : ''}`}>
+          <div className={styles.chatHeader}>
+            <button className={styles.button} onClick={() => setMaximized(false)}>⬅</button>
+            <h3 className={styles.nametext}>
+              {selectedContact}
+              {onlineUsers.includes(selectedContact) ?
+                <span className={styles.online}> (online)</span> :
+                <span className={styles.offline}> (offline)</span>}
+            </h3>
+          </div>
+          <div className={styles.typingText}>{typing}</div>
 
-        <div className={styles.chatBox}>
-          {messages.map((m, i) => (
-            <div
-              key={i}
-              className={`${styles.messageBubble} ${m.sender === username ? styles.sent : styles.received}`}
-            >
-              <div className={styles.messageContent}>{m.message}</div>
-              <div className={styles.messageMeta}>
-                <small>{new Date(m.timestamp).toLocaleTimeString()} </small>
+          <div className={styles.chatBox}>
+            {messages.map((m, i) => (
+              <div
+                key={i}
+                className={`${styles.messageBubble} ${m.sender === username ? styles.sent : styles.received}`}
+              >
+                <div className={styles.messageContent}>{m.message}</div>
+                <div className={styles.messageMeta}>
+                  <small>{new Date(m.timestamp).toLocaleTimeString()} </small>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className={styles.inputSection}>
-          <input
-            value={message}
-            onChange={handleTyping}
-            placeholder="Type..."
-             className={styles.inputBox}
-          />
-          <button onClick={sendMessage} className={styles.button}>Send</button>
-          <button onClick={clearChat} className={styles.button}>Clear Chat</button>
+          <div className={styles.inputSection}>
+            <input
+              value={message}
+              onChange={handleTyping}
+              placeholder="Type..."
+              className={styles.inputBox}
+            />
+            <button onClick={sendMessage} className={styles.button}>Send</button>
+            <button onClick={clearChat} className={styles.button}>Clear Chat</button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
