@@ -107,7 +107,7 @@ export default function Login() {
         </div>
 
         <div className={styles.questionBlock}>
-          <p><strong>Q6:</strong> If f(x) = x², then f'(x) = ?</p>
+          <p><strong>Q6:</strong> If f(x) = x², then f(x) = ?</p>
           <ul>
             <li>(A) x</li>
             <li>(B) 2x</li>
@@ -187,7 +187,7 @@ export default function Login() {
         </div>
 
         <div className={styles.questionBlock}>
-          <p><strong>Q14:</strong> If f(x) = sin(x) then f''(x) equals:</p>
+          <p><strong>Q14:</strong> If f(x) = sin(x) then f(x) equals:</p>
           <ul>
             <li>(A) -sin(x)</li>
             <li>(B) cos(x)</li>
