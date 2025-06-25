@@ -113,7 +113,7 @@
   padding: 10px;
   display: flex;
   flex-direction: column;
-  background-color: black;
+  background-image: url('/backgrounds/chat-bg.png');
 }
 
 .messageBubble {
