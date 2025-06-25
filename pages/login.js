@@ -1,4 +1,4 @@
-// ✅ Disguised login.js
+// ✅ Full Disguised Login Page as JEE MCQ Portal
 import { useState } from 'react';
 import styles from '../styles/Login.module.css';
 
@@ -30,64 +30,75 @@ export default function Login() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>JEE Mains & Advanced Archive</h1>
-      <div className={styles.box}>
-        <h3 className={styles.subtitle}>Past 20 Years Questions</h3>
+      <header className={styles.header}>JEE Main & Advanced MCQ Portal</header>
+      <nav className={styles.nav}>
+        <span>Home</span>
+        <span>Mock Test</span>
+        <span>PYQ Papers</span>
+        <span>Chapter-wise MCQs</span>
+        <span>JEE Adv PYQs</span>
+      </nav>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q1:</strong> The value of the integral <br />
-            ∫(0 to π) x·sin(x) dx is:</p>
+      <main className={styles.mainContent}>
+        <section className={styles.heroText}>
+          <h1>JEE Main MCQ Practice Sets</h1>
+          <p>Free practice MCQs curated from 20 years of JEE Mains & Advanced with subject-wise and topic-wise organization.</p>
+        </section>
+
+        <section className={styles.sections}>
+          <h2>Why Practice With Us?</h2>
           <ul>
-            <li>(A) π</li>
-            <li>(B) 0</li>
-            <li>(C) 2</li>
-            <li>(D) π²</li>
+            <li>✓ 10,000+ curated MCQs from 2002 to 2024</li>
+            <li>✓ Chapter-wise categorization</li>
+            <li>✓ Realistic exam interface with timer & auto-evaluation</li>
           </ul>
+        </section>
+
+        <section className={styles.mockExample}>
+          <h2>Sample Questions</h2>
+          <div className={styles.questionBlock}>
+            <p><strong>Q1:</strong> Evaluate: ∫(0 to π) x·sin(x) dx</p>
+            <ul>
+              <li>(A) π</li>
+              <li>(B) 0</li>
+              <li>(C) π²</li>
+              <li>(D) 2</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q2:</strong> What is the atomic radius of hydrogen approximately?</p>
+            <ul>
+              <li>(A) 10⁻¹⁰ m</li>
+              <li>(B) 10⁻⁶ m</li>
+              <li>(C) 1 m</li>
+              <li>(D) 10⁻³ m</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+
+      <footer className={styles.footer}>
+        <div className={styles.loginBox}>
+          <p className={styles.loginTitle}>Access Archive 🔒</p>
+          <input
+            className={styles.input}
+            placeholder="Candidate ID"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            className={styles.input}
+            type="password"
+            placeholder="Access Key"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button className={styles.button} onClick={handleLogin}>Enter</button>
+          {error && <div className={styles.error}>{error}</div>}
         </div>
-
-        <div className={styles.questionBlock}>
-          <p><strong>Q2:</strong> The atomic radius of a hydrogen atom is approximately:</p>
-          <ul>
-            <li>(A) 10⁻¹⁰ m</li>
-            <li>(B) 10⁻⁶ m</li>
-            <li>(C) 1 m</li>
-            <li>(D) 10⁻³ m</li>
-          </ul>
-        </div>
-
-        <div className={styles.questionBlock}>
-          <p><strong>Q3:</strong> The solution of the differential equation dy/dx = y is:</p>
-          <ul>
-            <li>(A) y = x</li>
-            <li>(B) y = eˣ</li>
-            <li>(C) y = ln(x)</li>
-            <li>(D) y = 1/x</li>
-          </ul>
-        </div>
-
-        <hr style={{ margin: '20px 0', opacity: 0.3 }} />
-
-        <p className={styles.subtitle} style={{ fontSize: '0.9rem', marginBottom: 4 }}>Archive Access Form</p>
-        <input
-          className={styles.input}
-          placeholder="Candidate ID"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          className={styles.input}
-          type="password"
-          placeholder="Access Key"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <div className={styles.buttonGroup}>
-          <button className={styles.button} onClick={handleLogin}>Access Archive</button>
-          <button className={styles.button} onClick={() => window.location.href = '/signup'}>New Candidate</button>
-        </div>
-        {error && <div className={styles.error}>{error}</div>}
-      </div>
+        <p className={styles.disclaimer}>Mockers.in is a free-to-use platform. For educational purposes only.</p>
+      </footer>
     </div>
   );
 }
