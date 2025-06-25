@@ -1,108 +1,62 @@
 .container {
+  height: 100vh;
+  background-color: #0b0b0b;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background-color: #f4f4f9;
-  padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .title {
-  font-size: 2.4rem;
-  font-weight: bold;
-  color: #2d3e50;
-  margin-bottom: 1rem;
-  text-align: center;
+  color: white;
+  font-size: 36px;
+  margin-bottom: 20px;
 }
 
 .box {
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: #2d0a0a;
+  padding: 40px;
   border-radius: 12px;
-  padding: 2rem;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+  width: 200px;
+  text-align: center;
 }
 
 .subtitle {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #444;
-  margin-bottom: 1rem;
-  text-align: left;
+  color: #ffbdbd;
+  margin-bottom: 20px;
 }
 
 .input {
-  width: 100%;
-  padding: 0.7rem;
-  margin: 0.5rem 0;
-  border: 1px solid #bbb;
+  width: 95%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
   border-radius: 6px;
-  font-size: 1rem;
+  background-color: #1c1c1c;
+  color: white;
 }
 
 .buttonGroup {
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
 }
 
 .button {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  background-color: #0077cc;
+  background-color: #b30000;
   color: white;
   border: none;
+  padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
 }
 
 .button:hover {
-  background-color: #005fa3;
+  background-color: #cc0000;
 }
 
 .error {
-  color: #d8000c;
-  background-color: #ffd2d2;
-  border: 1px solid #d8000c;
-  padding: 0.5rem;
-  margin-top: 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.questionBlock {
-  margin-bottom: 1.5rem;
-  background-color: #fdfdfd;
-  border-left: 4px solid #0077cc;
-  padding: 1rem;
-  border-radius: 6px;
-}
-
-.questionBlock p {
-  margin: 0 0 0.5rem 0;
-  font-weight: 500;
-  color: #333;
-}
-
-.questionBlock ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.questionBlock li {
-  margin: 0.3rem 0;
-  padding-left: 1rem;
-  position: relative;
-}
-
-.questionBlock li::before {
-  content: '○';
-  position: absolute;
-  left: 0;
-  color: #0077cc;
+  margin-top: 15px;
+  color: #ff3333;
+  font-size: 14px;
 }

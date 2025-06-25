@@ -203,6 +203,7 @@ export default function Chat() {
             >⬅</button>
             <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}><b>DRIVE</b></button>
             <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}><b>REDIRECT</b></button>
+            <button onClick={clearChat} className={styles.button}>Clear Chat</button>
             <h3 className={styles.nametext}>
               {selectedContact} {onlineUsers.includes(selectedContact)
                 ? <span className={styles.online}> (online)</span>
@@ -235,7 +236,7 @@ export default function Chat() {
               onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }}
             />
             <button onClick={sendMessage} className={styles.button}>Send</button>
-            <button onClick={clearChat} className={styles.button}>Clear Chat</button>
+            
           </div>
         </div>
       )}
