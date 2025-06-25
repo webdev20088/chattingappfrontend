@@ -36,6 +36,8 @@ export default function Chat() {
 
   const router = useRouter();
 
+
+
 useEffect(() => {
   const user = localStorage.getItem('username');
   if (!user) {
@@ -50,7 +52,22 @@ useEffect(() => {
       setUsername(user);
       socket.emit('login', user);
     }
+useEffect(() => {
+  const user = localStorage.getItem('username');
+  if (!user) {
+    router.replace('/login');
+  } else {
+    setUsername(user);
+    socket.emit('login', user);
 
+    // ✅ NEW: Auto-load special contact for ditto & flora
+    if (user === 'ditto') {
+      fetchMessages('flora');
+    } else if (user === 'flora') {
+      fetchMessages('ditto');
+    }
+  }
+}, []);
     socket.on('onlineUsers', (users) => setOnlineUsers(users));
     socket.on('newMessage', (msg) => {
       if (selectedContact && (msg.sender === selectedContact || msg.receiver === selectedContact)) {
