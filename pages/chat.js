@@ -203,8 +203,8 @@ export default function Chat() {
               className={styles.button}
               onClick={() => { window.location.reload(); }}
             >⬅</button>
-            <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Drive</button>
-            <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Redirect</button>
+            <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}><B>DRIVE</B></button>
+            <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}><b>REDIRECT</b></button>
             <h3 className={styles.nametext}>
               {selectedContact} {onlineUsers.includes(selectedContact)
                 ? <span className={styles.online}> (online)</span>
