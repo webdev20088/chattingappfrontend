@@ -13,9 +13,7 @@ const redirectLinks = [
   'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/classification-of-crystalline-solids',
   'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/crystalline-and-unit-cells',
   'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/exemplar-problems',
-  'https://www.doubtnut.com/class-12/chemistry/organic-chemistry',
-  'https://www.doubtnut.com/class-12/chemistry/question-bank',
-  'https://www.doubtnut.com/class-12/physics/question-bank/join-quiz'
+  
 ];
 
 export default function Chat() {
@@ -203,7 +201,7 @@ export default function Chat() {
               className={styles.button}
               onClick={() => { window.location.reload(); }}
             >⬅</button>
-            <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}><B>DRIVE</B></button>
+            <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}><b>DRIVE</b></button>
             <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}><b>REDIRECT</b></button>
             <h3 className={styles.nametext}>
               {selectedContact} {onlineUsers.includes(selectedContact)
