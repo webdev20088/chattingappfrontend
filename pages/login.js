@@ -56,25 +56,155 @@ export default function Login() {
 
         <section className={styles.mockExample}>
           <h2>Sample Questions</h2>
-          <div className={styles.questionBlock}>
-            <p><strong>Q1:</strong> Evaluate: ∫(0 to π) x·sin(x) dx</p>
-            <ul>
-              <li>(A) π</li>
-              <li>(B) 0</li>
-              <li>(C) π²</li>
-              <li>(D) 2</li>
-            </ul>
-          </div>
+        <div className={styles.questionBlock}>
+          <p><strong>Q1:</strong> Evaluate: ∫(0 to π) x·sin(x) dx</p>
+          <ul>
+            <li>(A) π</li>
+            <li>(B) 0</li>
+            <li>(C) π²</li>
+            <li>(D) 2</li>
+          </ul>
+        </div>
 
-          <div className={styles.questionBlock}>
-            <p><strong>Q2:</strong> What is the atomic radius of hydrogen approximately?</p>
-            <ul>
-              <li>(A) 10⁻¹⁰ m</li>
-              <li>(B) 10⁻⁶ m</li>
-              <li>(C) 1 m</li>
-              <li>(D) 10⁻³ m</li>
-            </ul>
-          </div>
+        <div className={styles.questionBlock}>
+          <p><strong>Q2:</strong> The limit lim(x→0) (sin x)/x equals:</p>
+          <ul>
+            <li>(A) 0</li>
+            <li>(B) 1</li>
+            <li>(C) ∞</li>
+            <li>(D) -1</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q3:</strong> Derivative of ln(x) is:</p>
+          <ul>
+            <li>(A) 1/x</li>
+            <li>(B) x</li>
+            <li>(C) ln(x)</li>
+            <li>(D) eˣ</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q4:</strong> If A = [ [1 2], [3 4] ], then det(A) = ?</p>
+          <ul>
+            <li>(A) -2</li>
+            <li>(B) 10</li>
+            <li>(C) -10</li>
+            <li>(D) 2</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q5:</strong> The integral ∫ cos²x dx equals:</p>
+          <ul>
+            <li>(A) (x/2) + (sin2x)/4 + C</li>
+            <li>(B) sinx</li>
+            <li>(C) x + C</li>
+            <li>(D) cosx</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q6:</strong> If f(x) = x², then f'(x) = ?</p>
+          <ul>
+            <li>(A) x</li>
+            <li>(B) 2x</li>
+            <li>(C) x²</li>
+            <li>(D) 2</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q7:</strong> The solution of dy/dx = y is:</p>
+          <ul>
+            <li>(A) y = eˣ</li>
+            <li>(B) y = x</li>
+            <li>(C) y = ln(x)</li>
+            <li>(D) y = x²</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q8:</strong> ∫ eˣ dx equals:</p>
+          <ul>
+            <li>(A) eˣ + C</li>
+            <li>(B) ln(x) + C</li>
+            <li>(C) x·eˣ</li>
+            <li>(D) eˣ/x</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q9:</strong> If z = 3 + 4i, then |z| is:</p>
+          <ul>
+            <li>(A) 5</li>
+            <li>(B) 7</li>
+            <li>(C) 1</li>
+            <li>(D) 25</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q10:</strong> The derivative of sin(x) is:</p>
+          <ul>
+            <li>(A) cos(x)</li>
+            <li>(B) sin(x)</li>
+            <li>(C) -cos(x)</li>
+            <li>(D) -sin(x)</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q11:</strong> The value of lim(x→0) (1 - cosx)/x² is:</p>
+          <ul>
+            <li>(A) 0</li>
+            <li>(B) 1</li>
+            <li>(C) 1/2</li>
+            <li>(D) ∞</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q12:</strong> The general solution of sinx = 0 is:</p>
+          <ul>
+            <li>(A) nπ</li>
+            <li>(B) nπ/2</li>
+            <li>(C) π/2 + nπ</li>
+            <li>(D) 2nπ</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q13:</strong> The value of ∫₀¹ x³ dx is:</p>
+          <ul>
+            <li>(A) 1/2</li>
+            <li>(B) 1/4</li>
+            <li>(C) 1/3</li>
+            <li>(D) 1/5</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q14:</strong> If f(x) = sin(x) then f''(x) equals:</p>
+          <ul>
+            <li>(A) -sin(x)</li>
+            <li>(B) cos(x)</li>
+            <li>(C) -cos(x)</li>
+            <li>(D) sin(x)</li>
+          </ul>
+        </div>
+
+        <div className={styles.questionBlock}>
+          <p><strong>Q15:</strong> If y = e^(2x), then dy/dx equals:</p>
+          <ul>
+            <li>(A) 2e^(2x)</li>
+            <li>(B) e^(2x)</li>
+            <li>(C) 2x</li>
+            <li>(D) eˣ</li>
+          </ul>
+        </div>
         </section>
       </main>
 

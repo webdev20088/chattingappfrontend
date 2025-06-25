@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 const socket = io('https://mychatappbackend-zzhh.onrender.com');
 const redirectLinks = [
-  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/assertion--reason',
+  
   'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/amorphous-and-crystalline-solids',
   'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/assertion-and-reason',
   'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/calculations-involving-unit-cell-dimensions',
