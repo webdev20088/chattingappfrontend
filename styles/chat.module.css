@@ -6,25 +6,7 @@
   overflow: hidden;
   background-color: #2e2c2c;
 }
-.sent {
-  background-color: #cce5ff; /* 🔵 light blue */
-  align-self: flex-end;
-  color: black;
-  border-radius: 15px;
-  padding: 8px 12px;
-  margin: 4px 0;
-  max-width: 60%;
-}
 
-.received {
-  background-color: #ffd1dc; /* 🌸 light pink */
-  align-self: flex-start;
-  color: black;
-  border-radius: 15px;
-  padding: 8px 12px;
-  margin: 4px 0;
-  max-width: 60%;
-}
 
 .contactSection {
   width: 80%;
@@ -145,7 +127,7 @@
 
 .sent {
   align-self: flex-end;
-  background-color: #d35b75;
+  background-color: rgb(96, 178, 255);
   color: white;
   text-align: left;
   border-bottom-right-radius: 0;
@@ -154,7 +136,7 @@
 
 .received {
   align-self: flex-start;
-  background-color: #d35b75;
+  background-color: #ff6385;
   color: white;
   text-align: left;
   border-bottom-left-radius: 0;
