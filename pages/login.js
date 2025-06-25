@@ -224,7 +224,17 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <button className={styles.button} onClick={handleLogin}>Enter</button>
+        <button
+          className={styles.button}
+          style={{ backgroundColor: '#6c757d' }}
+          onClick={() => window.location.href = '/signup'}
+  >
+          Register New Candidate
+  </button>
+</div>
+
           {error && <div className={styles.error}>{error}</div>}
         </div>
         <p className={styles.disclaimer}>Mockers.in is a free-to-use platform. For educational purposes only.</p>
