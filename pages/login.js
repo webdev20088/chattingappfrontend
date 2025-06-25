@@ -51,6 +51,7 @@ export default function Login() {
             <li>✓ 10,000+ curated MCQs from 2002 to 2024</li>
             <li>✓ Chapter-wise categorization</li>
             <li>✓ Realistic exam interface with timer & auto-evaluation</li>
+            <li>✓ All the questions are from a renowned author Aniket Raj Mandal (PCM) </li>
           </ul>
         </section>
 
