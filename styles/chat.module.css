@@ -127,7 +127,7 @@
 
 .sent {
   align-self: flex-end;
-  background-color: rgb(96, 178, 255);
+  background-color: rgb(30, 164, 253);
   color: white;
   text-align: left;
   border-bottom-right-radius: 0;
@@ -136,7 +136,7 @@
 
 .received {
   align-self: flex-start;
-  background-color: #ff6385;
+  background-color: #f5286c;
   color: white;
   text-align: left;
   border-bottom-left-radius: 0;
