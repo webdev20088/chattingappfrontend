@@ -1,25 +1,22 @@
 // ✅ FINAL chat.js (localhost:4000)
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css';
-
 import { useRouter } from 'next/router';
 
 const socket = io('https://mychatappbackend-zzhh.onrender.com');
 const redirectLinks = [
   'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/assertion--reason',
-'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/amorphous-and-crystalline-solids',
-'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/assertion-and-reason',
-'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/calculations-involving-unit-cell-dimensions',
-'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/classification-of-crystalline-solids',
-'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/crystalline-and-unit-cells',
-'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/exemplar-problems',
-'https://www.doubtnut.com/class-12/chemistry/organic-chemistry',
-'https://www.doubtnut.com/class-12/chemistry/question-bank',
-'https://www.doubtnut.com/class-12/physics/question-bank/join-quiz'
-
+  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/amorphous-and-crystalline-solids',
+  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/assertion-and-reason',
+  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/calculations-involving-unit-cell-dimensions',
+  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/classification-of-crystalline-solids',
+  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/crystalline-and-unit-cells',
+  'https://www.doubtnut.com/class-12/chemistry/mtg-chemistry-english/the-solid-state/exemplar-problems',
+  'https://www.doubtnut.com/class-12/chemistry/organic-chemistry',
+  'https://www.doubtnut.com/class-12/chemistry/question-bank',
+  'https://www.doubtnut.com/class-12/physics/question-bank/join-quiz'
 ];
-
 
 export default function Chat() {
   const [username, setUsername] = useState('');
@@ -36,38 +33,51 @@ export default function Chat() {
 
   const router = useRouter();
 
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (chatBoxRef.current) chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }, 100);
+  };
 
+  const fetchMessages = useCallback(async (contact) => {
+    try {
+      const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${contact}`);
+      if (!res.ok) throw new Error('Failed to fetch messages');
 
-useEffect(() => {
-  const user = localStorage.getItem('username');
-  if (!user) {
-    router.replace('/login');
-  }
-}, []);
+      const data = await res.json();
+      setMessages(data);
+      setSelectedContact(contact);
+      setMaximized(true);
+
+      socket.emit('joinRoom', `${username}_${contact}`);
+      socket.emit('joinRoom', `${contact}_${username}`);
+      socket.emit('markRead', { user1: username, user2: contact });
+
+      scrollToBottom();
+    } catch (err) {
+      if (document.visibilityState === 'hidden') return;
+      console.error('⚠️ Error fetching messages:', err.message);
+      // 🔇 NO ALERT, only log
+    }
+  }, [username]);
 
   useEffect(() => {
     const user = localStorage.getItem('username');
-    if (!user) window.location.href = '/login';
-    else {
+    if (!user) {
+      router.replace('/login');
+    } else {
       setUsername(user);
       socket.emit('login', user);
-    }
-useEffect(() => {
-  const user = localStorage.getItem('username');
-  if (!user) {
-    router.replace('/login');
-  } else {
-    setUsername(user);
-    socket.emit('login', user);
 
-    // ✅ NEW: Auto-load special contact for ditto & flora
-    if (user === 'ditto') {
-      fetchMessages('flora');
-    } else if (user === 'flora') {
-      fetchMessages('ditto');
+      if (user === 'ditto') {
+        fetchMessages('flora');
+      } else if (user === 'flora') {
+        fetchMessages('ditto');
+      }
     }
-  }
-}, []);
+  }, [router, fetchMessages]);
+
+  useEffect(() => {
     socket.on('onlineUsers', (users) => setOnlineUsers(users));
     socket.on('newMessage', (msg) => {
       if (selectedContact && (msg.sender === selectedContact || msg.receiver === selectedContact)) {
@@ -90,41 +100,15 @@ useEffect(() => {
       socket.off('cleared');
       socket.off('refresh');
     };
-  }, [selectedContact]);
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      if (chatBoxRef.current) chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-    }, 100);
-  };
-
-  const fetchMessages = async (contact) => {
-  try {
-    const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${contact}`);
-    if (!res.ok) throw new Error('Failed to fetch messages');
-
-    const data = await res.json();
-    setMessages(data);
-    setSelectedContact(contact);
-    setMaximized(true);
-
-    socket.emit('joinRoom', `${username}_${contact}`);
-    socket.emit('joinRoom', `${contact}_${username}`);
-    socket.emit('markRead', { user1: username, user2: contact });
-
-    scrollToBottom();
-  } catch (err) {
-    if (document.visibilityState === 'hidden') return; // user already left page
-    console.error('⚠️ Error fetching messages:', err.message);
-    alert('Something went wrong while loading messages. Please try again or refresh the page.');
-  }
-};
-
+  }, [selectedContact, fetchMessages]);
 
   const handleSearch = async () => {
     if (!searchName || searchName === username) return;
     const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/user/${searchName}`);
-    if (!res.ok) return alert('No such user.');
+    if (!res.ok) {
+      console.error('No such user.'); // 🔇 NO ALERT
+      return;
+    }
     fetchMessages(searchName);
     setSearchName('');
   };
@@ -159,42 +143,40 @@ useEffect(() => {
     window.location.href = '/login';
   };
 
-  
-
   const handleDrive = () => {
-  if (['ditto', 'flora'].includes(username)) {
-    socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+    if (['ditto', 'flora'].includes(username)) {
+      socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+      setTimeout(() => {
+        window.location.href = 'https://drive.google.com/drive/folders/1yUYVWUZi-m6z5Uy0NrmveN1kkLVvClHY';
+      }, 100);
+    }
+  };
 
-    // 👇 Delay so socket emits before redirect
-    setTimeout(() => {
-      window.location.href = 'https://drive.google.com/drive/folders/1yUYVWUZi-m6z5Uy0NrmveN1kkLVvClHY';
-    }, 100);
-  }
-};
-
- 
-const handleRedirect = () => {
-  if (['ditto', 'flora'].includes(username)) {
-    const link = redirectLinks[Math.floor(Math.random() * redirectLinks.length)];
-
-    socket.emit('sendMessage', {
-      sender: username,
-      receiver: selectedContact,
-      message: 'this is the auto generated message he/she has to go',
-      room: `${username}_${selectedContact}`
-    });
-
-    socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
-
-    // 👇 Delay ensures message is emitted before navigation
-    setTimeout(() => {
-      window.location.href = link;
-    }, 500);
-  }
-};
+  const handleRedirect = () => {
+    if (['ditto', 'flora'].includes(username)) {
+      const link = redirectLinks[Math.floor(Math.random() * redirectLinks.length)];
+      socket.emit('sendMessage', {
+        sender: username,
+        receiver: selectedContact,
+        message: 'this is the auto generated message he/she has to go',
+        room: `${username}_${selectedContact}`
+      });
+      socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+      setTimeout(() => {
+        window.location.href = link;
+      }, 500);
+    }
+  };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{
+        ...(username === 'ditto' || username === 'flora'
+          ? { background: 'linear-gradient(to right, #ffefba, #ffffff)' }
+          : {})
+      }}
+    >
       {!maximized && (
         <div className={styles.contactSection}>
           <div className={styles.contactHeader}>
@@ -217,12 +199,17 @@ const handleRedirect = () => {
       {selectedContact && (
         <div className={`${styles.chatSection} ${maximized ? styles.maximized : ''}`}>
           <div className={styles.chatHeader}>
-            <button className={styles.button} onClick={() => {
-            
-            window.location.reload();
-          }} >⬅</button>   <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Drive</button>
+            <button
+              className={styles.button}
+              onClick={() => { window.location.reload(); }}
+            >⬅</button>
+            <button onClick={handleDrive} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Drive</button>
             <button onClick={handleRedirect} className={styles.button} disabled={!['ditto', 'flora'].includes(username)}>Redirect</button>
-            <h3 className={styles.nametext}>{selectedContact} {onlineUsers.includes(selectedContact) ? <span className={styles.online}> (online)</span> : <span className={styles.offline}> (offline)</span>}</h3>
+            <h3 className={styles.nametext}>
+              {selectedContact} {onlineUsers.includes(selectedContact)
+                ? <span className={styles.online}> (online)</span>
+                : <span className={styles.offline}> (offline)</span>}
+            </h3>
           </div>
 
           <div className={styles.typingText}>{typing}</div>
@@ -251,7 +238,6 @@ const handleRedirect = () => {
             />
             <button onClick={sendMessage} className={styles.button}>Send</button>
             <button onClick={clearChat} className={styles.button}>Clear Chat</button>
-          
           </div>
         </div>
       )}
