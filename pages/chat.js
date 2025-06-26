@@ -59,6 +59,30 @@ export default function Chat() {
     }
   }, [username]);
 
+
+  useEffect(() => {
+  // 👇 Force browser not to load from bfcache
+  window.onpageshow = function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  };
+
+  const user = localStorage.getItem('username');
+  if (!user) {
+    router.replace('/login');
+  } else {
+    setUsername(user);
+    socket.emit('login', user);
+
+    if (user === 'ditto') {
+      fetchMessages('flora');
+    } else if (user === 'flora') {
+      fetchMessages('ditto');
+    }
+  }
+}, [router, fetchMessages]);
+  
   useEffect(() => {
     const user = localStorage.getItem('username');
     if (!user) {
