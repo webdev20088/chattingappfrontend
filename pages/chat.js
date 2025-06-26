@@ -160,6 +160,10 @@ export default function Chat() {
         room: `${username}_${selectedContact}`
       });
       socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+
+      // 🚫 Remove session before redirect
+      localStorage.removeItem('username');
+
       setTimeout(() => {
         window.location.href = link;
       }, 500);
