@@ -68,7 +68,7 @@ export default function Chat() {
       socket.emit('joinRoom', `${username}_${contact}`);
       socket.emit('joinRoom', `${contact}_${username}`);
       socket.emit('markRead', { user1: username, user2: contact });
-      if (scroll) scrollToBottom(true);
+      
     } catch (err) {
       console.error('Error fetching messages:', err.message);
     }
@@ -97,9 +97,19 @@ export default function Chat() {
       if (sender === selectedContact) setTyping(isTyping ? `${sender} is typing...` : '');
     });
     socket.on('cleared', () => setMessages([]));
-    socket.on('refresh', () => {
-      if (selectedContact) fetchMessages(selectedContact, isUserAtBottom); 
-      });
+    socket.on('refresh', async () => {
+  if (!selectedContact) return;
+
+  const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${selectedContact}`);
+  const data = await res.json();
+  setMessages(data);
+
+  // ✅ scroll ONLY if user was near bottom
+  if (isUserAtBottom) {
+    scrollToBottom();
+  }
+});
+
 
     return () => {
       socket.off('onlineUsers');
