@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import styles from '../styles/Admin.module.css';
+
+const socket = io('https://mychatappbackend-zzhh.onrender.com');
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
@@ -57,6 +60,14 @@ export default function AdminPanel() {
   useEffect(() => {
     fetchUsers();
     fetchPairs();
+
+    socket.on('userListUpdated', fetchUsers);
+    socket.on('pairDataUpdated', fetchPairs);
+
+    return () => {
+      socket.off('userListUpdated', fetchUsers);
+      socket.off('pairDataUpdated', fetchPairs);
+    };
   }, []);
 
   return (

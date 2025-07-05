@@ -30,11 +30,20 @@ export default function Chat() {
   const typingTimeout = useRef(null);
   const router = useRouter();
 
-  const scrollToBottom = () => {
+  const scrollToBottom = (force = false) => {
+  if (!chatBoxRef.current) return;
+
+  const chatBox = chatBoxRef.current;
+  const distanceFromBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight;
+
+  // Scroll if user is near bottom OR forced
+  if (distanceFromBottom < 100 || force) {
     setTimeout(() => {
-      if (chatBoxRef.current) chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+      chatBox.scrollTop = chatBox.scrollHeight;
     }, 100);
-  };
+  }
+};
+
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -57,7 +66,7 @@ export default function Chat() {
       socket.emit('joinRoom', `${username}_${contact}`);
       socket.emit('joinRoom', `${contact}_${username}`);
       socket.emit('markRead', { user1: username, user2: contact });
-      scrollToBottom();
+      scrollToBottom(true);
     } catch (err) {
       console.error('Error fetching messages:', err.message);
     }
@@ -78,9 +87,10 @@ export default function Chat() {
     socket.on('newMessage', (msg) => {
       if (selectedContact && (msg.sender === selectedContact || msg.receiver === selectedContact)) {
         setMessages((prev) => [...prev, msg]);
-        scrollToBottom();
-      }
-    });
+        scrollToBottom(msg.sender === username); // Only force-scroll if YOU sent it
+  }
+});
+
     socket.on('typing', ({ sender, isTyping }) => {
       if (sender === selectedContact) setTyping(isTyping ? `${sender} is typing...` : '');
     });
