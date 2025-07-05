@@ -58,7 +58,7 @@ export default function Chat() {
     return date.toDateString();
   };
 
-  const fetchMessages = useCallback(async (contact) => {
+  const fetchMessages = useCallback(async (contact, scroll = true) => {
     try {
       const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${contact}`);
       const data = await res.json();
@@ -68,7 +68,7 @@ export default function Chat() {
       socket.emit('joinRoom', `${username}_${contact}`);
       socket.emit('joinRoom', `${contact}_${username}`);
       socket.emit('markRead', { user1: username, user2: contact });
-      scrollToBottom(true);
+      if (scroll) scrollToBottom(true);
     } catch (err) {
       console.error('Error fetching messages:', err.message);
     }
@@ -98,8 +98,9 @@ export default function Chat() {
     });
     socket.on('cleared', () => setMessages([]));
     socket.on('refresh', () => {
-      if (selectedContact) fetchMessages(selectedContact);
-    });
+      if (selectedContact) fetchMessages(selectedContact, isUserAtBottom); 
+      });
+
     return () => {
       socket.off('onlineUsers');
       socket.off('newMessage');
@@ -247,8 +248,9 @@ export default function Chat() {
             {taggedMsg && (
             <div className={styles.tagBoxWrapper}>
               <div className={styles.tagBoxinput}>
-                {taggedMsg.length > 80 ? taggedMsg.slice(0, 80) + '...' : taggedMsg}
                 <span onClick={() => setTaggedMsg(null)} className={styles.tagClose}>❌</span>
+                {taggedMsg.length > 80 ? taggedMsg.slice(0, 80) + '...' : taggedMsg}
+                
             </div>
           </div>
 )}
