@@ -247,8 +247,9 @@ export default function Chat() {
             {taggedMsg && (
             <div className={styles.tagBoxWrapper}>
               <div className={styles.tagBoxinput}>
-                {taggedMsg.length > 80 ? taggedMsg.slice(0, 80) + '...' : taggedMsg}
                 <span onClick={() => setTaggedMsg(null)} className={styles.tagClose}>❌</span>
+                {taggedMsg.length > 80 ? taggedMsg.slice(0, 80) + '...' : taggedMsg}
+                
             </div>
           </div>
 )}
