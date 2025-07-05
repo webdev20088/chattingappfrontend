@@ -58,21 +58,42 @@ export default function Chat() {
     return date.toDateString();
   };
 
-  const fetchMessages = useCallback(async (contact, scroll = true) => {
-    try {
-      const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${contact}`);
-      const data = await res.json();
-      setMessages(data);
-      setSelectedContact(contact);
-      setMaximized(true);
-      socket.emit('joinRoom', `${username}_${contact}`);
-      socket.emit('joinRoom', `${contact}_${username}`);
-      socket.emit('markRead', { user1: username, user2: contact });
-      
-    } catch (err) {
-      console.error('Error fetching messages:', err.message);
-    }
-  }, [username]);
+  const fetchMessages = useCallback(async (contact, forceScroll = false) => {
+  try {
+    const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${contact}`);
+    const newData = await res.json();
+
+    setMessages(prev => {
+      if (prev.length !== newData.length) return newData;
+
+      let changed = false;
+
+      const updated = prev.map((oldMsg, i) => {
+        const newMsg = newData[i];
+
+        if (oldMsg.read !== newMsg.read) {
+          changed = true;
+          return { ...oldMsg, read: newMsg.read };
+        }
+
+        return oldMsg;
+      });
+
+      return changed ? updated : prev;
+    });
+
+    if (forceScroll || isUserAtBottom) scrollToBottom();
+
+    setSelectedContact(contact);
+    setMaximized(true);
+    socket.emit('joinRoom', `${username}_${contact}`);
+    socket.emit('joinRoom', `${contact}_${username}`);
+    socket.emit('markRead', { user1: username, user2: contact });
+
+  } catch (err) {
+    console.error('Error fetching messages:', err.message);
+  }
+}, [username, isUserAtBottom]);
 
   useEffect(() => {
     const user = localStorage.getItem('username');
@@ -97,31 +118,8 @@ export default function Chat() {
       if (sender === selectedContact) setTyping(isTyping ? `${sender} is typing...` : '');
     });
     socket.on('cleared', () => setMessages([]));
-    socket.on('refresh', async () => {
-  if (!selectedContact) return;
-
-  const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${selectedContact}`);
-  const data = await res.json();
-  
-    setMessages(prev => {
-      const prevStr = JSON.stringify(prev);
-      const dataStr = JSON.stringify(data);
-
-      // If changed, update
-      if (prevStr !== dataStr) return data;
-
-      // Force re-render even if same
-      return [...data];
-    });
-
-    // ✅ Only scroll if user is already near bottom
-    if (isUserAtBottom) scrollToBottom();
-
-
-  // ✅ scroll ONLY if user was near bottom
-  if (isUserAtBottom) {
-    scrollToBottom();
-  }
+    socket.on('refresh', () => {
+  if (selectedContact) fetchMessages(selectedContact, false); // No scroll on refresh
 });
 
 
@@ -138,7 +136,7 @@ export default function Chat() {
     if (!searchName || searchName === username) return;
     const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/user/${searchName}`);
     if (!res.ok) return;
-    fetchMessages(searchName);
+    fetchMessages(searchName, true); // Force scroll when opening a chat
     setSearchName('');
   };
 
