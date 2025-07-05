@@ -38,13 +38,13 @@ export default function Chat() {
 
   const distanceFromBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight;
 
-  // Only scroll if forced or user is already at bottom
-  if (force || isUserAtBottom) {
+  if (force) {
     setTimeout(() => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }, 100);
   }
 };
+
 
 
   const formatDate = (dateStr) => {
@@ -82,7 +82,8 @@ export default function Chat() {
       return changed ? updated : prev;
     });
 
-    if (forceScroll || isUserAtBottom) scrollToBottom();
+    if (forceScroll) scrollToBottom(true); // only force when truly opening chat
+
 
     setSelectedContact(contact);
     setMaximized(true);
@@ -119,8 +120,9 @@ export default function Chat() {
     });
     socket.on('cleared', () => setMessages([]));
     socket.on('refresh', () => {
-  if (selectedContact) fetchMessages(selectedContact, false); // No scroll on refresh
+  if (selectedContact) fetchMessages(selectedContact, false); // No force scroll!
 });
+
 
 
     return () => {
