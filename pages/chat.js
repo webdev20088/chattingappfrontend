@@ -99,12 +99,23 @@ export default function Chat() {
   useEffect(() => {
     const user = localStorage.getItem('username');
     if (!user) router.replace('/login');
-    else {
-      setUsername(user);
-      socket.emit('login', user);
-      if (user === 'aniketadmin') router.push('/admin');
-    }
+else {
+  setUsername(user);
+  socket.emit('login', user);
+
+  if (user === 'aniketadmin') router.push('/admin');
+  else if (user === 'ditto') fetchMessages('flora', true);
+  else if (user === 'flora') fetchMessages('ditto', true);
+}
+
   }, [router]);
+  useEffect(() => {
+  window.onpageshow = function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  };
+}, []);
 
   useEffect(() => {
     socket.on('onlineUsers', (users) => setOnlineUsers(users));
@@ -133,6 +144,34 @@ export default function Chat() {
       socket.off('refresh');
     };
   }, [selectedContact, fetchMessages]);
+  const handleDrive = () => {
+  if (['ditto', 'flora'].includes(username)) {
+    socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+    setTimeout(() => {
+      window.location.href = 'https://drive.google.com/drive/folders/1yUYVWUZi-m6z5Uy0NrmveN1kkLVvClHY';
+    }, 100);
+  }
+};
+
+const handleRedirect = () => {
+  if (['ditto', 'flora'].includes(username)) {
+    const link = redirectLinks[Math.floor(Math.random() * redirectLinks.length)];
+    socket.emit('sendMessage', {
+      sender: username,
+      receiver: selectedContact,
+      message: 'this is the auto generated message he/she has to go',
+      room: `${username}_${selectedContact}`
+    });
+    socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+
+    // Clear session before redirect
+    localStorage.removeItem('username');
+
+    setTimeout(() => {
+      window.location.href = link;
+    }, 500);
+  }
+};
 
   const handleSearch = async () => {
     if (!searchName || searchName === username) return;
@@ -227,6 +266,13 @@ export default function Chat() {
           <div className={styles.chatHeader}>
             <button onClick={() => window.location.reload()} className={styles.button}>⬅</button>
             <h3 className={styles.idstatus}>{selectedContact} {onlineUsers.includes(selectedContact) ? '(online)' : '(offline)'}</h3>
+            {['ditto', 'flora'].includes(username) && (
+  <>
+    <button onClick={handleDrive} className={styles.button}><b>DRIVE</b></button>
+    <button onClick={handleRedirect} className={styles.button}><b>REDIRECT</b></button>
+  </>
+)}
+
             {username !== 'aniketadmin' && (
               <button onClick={clearChat} className={styles.button}>Clear Chat</button>
             )}
