@@ -189,7 +189,7 @@ export default function Chat() {
         <div className={`${styles.chatSection} ${maximized ? styles.maximized : ''}`}>
           <div className={styles.chatHeader}>
             <button onClick={() => window.location.reload()} className={styles.button}>⬅</button>
-            <h3>{selectedContact} {onlineUsers.includes(selectedContact) ? '(online)' : '(offline)'}</h3>
+            <h3 className={styles.idstatus}>{selectedContact} {onlineUsers.includes(selectedContact) ? '(online)' : '(offline)'}</h3>
             {username !== 'aniketadmin' && (
               <button onClick={clearChat} className={styles.button}>Clear Chat</button>
             )}
