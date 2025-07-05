@@ -214,10 +214,11 @@ export default function Chat() {
   ref={chatBoxRef}
   onScroll={() => {
     if (!chatBoxRef.current) return;
-    const el = chatBoxRef.current;
-    const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
-    setIsUserAtBottom(distance < 100); // You can adjust 100 if needed
-  }}
+      const el = chatBoxRef.current;
+      const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
+      setIsUserAtBottom(Math.abs(distance) < 20); // ← more accurate
+}}
+
 >
 
             {groupedMessages.map((item, i) =>
