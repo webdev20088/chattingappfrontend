@@ -97,11 +97,10 @@ export default function Chat() {
 }, [username, isUserAtBottom]);
 
   useEffect(() => {
-  const user = localStorage.getItem('username');
-  if (!user) return router.replace('/login');
-
-  setUsername(user);
-  socket.emit('login', user);
+    const user = localStorage.getItem('username');
+    if (!user) router.replace('/login');
+    setUsername(user);
+    socket.emit('login', user);
 
   if (user === 'aniketadmin') return router.push('/admin');
 }, [router]);
@@ -110,9 +109,6 @@ useEffect(() => {
   if (username === 'ditto') fetchMessages('flora', true);
   else if (username === 'flora') fetchMessages('ditto', true);
 }, [username]);
-
-
-  }, [router]);
   useEffect(() => {
   window.onpageshow = function (event) {
     if (event.persisted) {
