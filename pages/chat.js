@@ -97,16 +97,20 @@ export default function Chat() {
 }, [username, isUserAtBottom]);
 
   useEffect(() => {
-    const user = localStorage.getItem('username');
-    if (!user) router.replace('/login');
-else {
+  const user = localStorage.getItem('username');
+  if (!user) return router.replace('/login');
+
   setUsername(user);
   socket.emit('login', user);
 
-  if (user === 'aniketadmin') router.push('/admin');
-  else if (user === 'ditto') fetchMessages('flora', true);
-  else if (user === 'flora') fetchMessages('ditto', true);
-}
+  if (user === 'aniketadmin') return router.push('/admin');
+}, [router]);
+
+useEffect(() => {
+  if (username === 'ditto') fetchMessages('flora', true);
+  else if (username === 'flora') fetchMessages('ditto', true);
+}, [username]);
+
 
   }, [router]);
   useEffect(() => {
