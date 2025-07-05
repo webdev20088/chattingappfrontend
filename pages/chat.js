@@ -102,7 +102,11 @@ export default function Chat() {
 
   const res = await fetch(`https://mychatappbackend-zzhh.onrender.com/messages?user1=${username}&user2=${selectedContact}`);
   const data = await res.json();
-  setMessages(data);
+  setMessages(prev => {
+  const changed = JSON.stringify(prev) !== JSON.stringify(data);
+  return changed ? data : [...data]; // ✅ forces re-render
+});
+
 
   // ✅ scroll ONLY if user was near bottom
   if (isUserAtBottom) {
