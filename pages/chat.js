@@ -25,6 +25,8 @@ export default function Chat() {
   const [typing, setTyping] = useState('');
   const [maximized, setMaximized] = useState(false);
   const [taggedMsg, setTaggedMsg] = useState(null);
+  const [isUserAtBottom, setIsUserAtBottom] = useState(true);
+
 
   const chatBoxRef = useRef(null);
   const typingTimeout = useRef(null);
@@ -32,12 +34,12 @@ export default function Chat() {
 
   const scrollToBottom = (force = false) => {
   if (!chatBoxRef.current) return;
-
   const chatBox = chatBoxRef.current;
+
   const distanceFromBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight;
 
-  // Scroll if user is near bottom OR forced
-  if (distanceFromBottom < 100 || force) {
+  // Only scroll if forced or user is already at bottom
+  if (force || isUserAtBottom) {
     setTimeout(() => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }, 100);
@@ -207,7 +209,17 @@ export default function Chat() {
 
           <div className={styles.typingText}>{typing}</div>
 
-          <div className={styles.chatBox} ref={chatBoxRef}>
+          <div
+  className={styles.chatBox}
+  ref={chatBoxRef}
+  onScroll={() => {
+    if (!chatBoxRef.current) return;
+    const el = chatBoxRef.current;
+    const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
+    setIsUserAtBottom(distance < 100); // You can adjust 100 if needed
+  }}
+>
+
             {groupedMessages.map((item, i) =>
               item.type === 'date' ? (
                 <div key={`date-${i}`} className={styles.dateLabel}>{item.label}</div>
