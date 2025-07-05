@@ -159,11 +159,11 @@ export default function Login() {
                 </ul>
               </div>
 
-              {[...Array(40)].map((_, index) => {
+              {[...Array(5)].map((_, index) => {
                 const num = index + 11;
                 return (
                   <div className={styles.questionBlock} key={num}>
-                    <p><strong>Q{num}:</strong> Chemistry MCQ placeholder #{num}</p>
+                    <p><strong>Q{num}:</strong> More questions will be added here #{num}</p>
                     <ul>
                       <li>(A) Option A</li>
                       <li>(B) Option B</li>
