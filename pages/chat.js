@@ -244,11 +244,15 @@ export default function Chat() {
               )
             )}
           </div>
-
-          <div className={styles.inputSection}>
             {taggedMsg && (
-              <div className={styles.tagBox}> {taggedMsg.length > 40 ? taggedMsg.slice(0, 40) + '...' : taggedMsg} <span onClick={() => setTaggedMsg(null)}>❌</span></div>
-            )}
+            <div className={styles.tagBoxWrapper}>
+              <div className={styles.tagBoxinput}>
+                {taggedMsg.length > 80 ? taggedMsg.slice(0, 80) + '...' : taggedMsg}
+                <span onClick={() => setTaggedMsg(null)} className={styles.tagClose}>❌</span>
+            </div>
+          </div>
+)}
+          <div className={styles.inputSection}>
             <input
               value={message}
               onChange={handleTyping}

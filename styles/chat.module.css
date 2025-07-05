@@ -118,6 +118,30 @@
   font-size: 0.9em;
   border-radius: 4px;
 }
+.tagBoxWrapper {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+}
+
+.tagBoxinput {
+  background-color: #f1f0f0;
+  padding: 0.6rem 1rem;
+  border-left: 4px solid #007bff;
+  border-radius: 5px;
+  max-width: 100%;
+  word-wrap: break-word;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tagClose {
+  cursor: pointer;
+  margin-left: 1rem;
+  font-weight: bold;
+}
 
 .tagBox {
   background-color: #ddd;
