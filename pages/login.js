@@ -48,6 +48,7 @@ export default function Login() {
         <section className={styles.sections}>
           <h2>Why Practice With Us?</h2>
           <ul>
+            <li>This is the v2.0 published on 05/07/2025</li>
             <li>✓ 10,000+ curated MCQs from 2002 to 2024</li>
             <li>✓ Chapter-wise categorization</li>
             <li>✓ Realistic exam interface with timer & auto-evaluation</li>
@@ -56,157 +57,124 @@ export default function Login() {
         </section>
 
         <section className={styles.mockExample}>
-          <h2>Sample Questions</h2>
-        <div className={styles.questionBlock}>
-          <p><strong>Q1:</strong> Evaluate: ∫(0 to π) x·sin(x) dx</p>
-          <ul>
-            <li>(A) π</li>
-            <li>(B) 0</li>
-            <li>(C) π²</li>
-            <li>(D) 2</li>
-          </ul>
-        </div>
+              <h2>Sample Questions</h2>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q2:</strong> The limit lim(x→0) (sin x)/x equals:</p>
-          <ul>
-            <li>(A) 0</li>
-            <li>(B) 1</li>
-            <li>(C) ∞</li>
-            <li>(D) -1</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q1:</strong> Which element has the highest electronegativity?</p>
+                <ul>
+                  <li>(A) Fluorine</li>
+                  <li>(B) Oxygen</li>
+                  <li>(C) Nitrogen</li>
+                  <li>(D) Chlorine</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q3:</strong> Derivative of ln(x) is:</p>
-          <ul>
-            <li>(A) 1/x</li>
-            <li>(B) x</li>
-            <li>(C) ln(x)</li>
-            <li>(D) eˣ</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q2:</strong> What is the oxidation number of Cr in Cr₂O₇²⁻?</p>
+                <ul>
+                  <li>(A) +6</li>
+                  <li>(B) +7</li>
+                  <li>(C) +3</li>
+                  <li>(D) +4</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q4:</strong> If A = [ [1 2], [3 4] ], then det(A) = ?</p>
-          <ul>
-            <li>(A) -2</li>
-            <li>(B) 10</li>
-            <li>(C) -10</li>
-            <li>(D) 2</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q3:</strong> Which gas is used in the Haber process?</p>
+                <ul>
+                  <li>(A) Hydrogen</li>
+                  <li>(B) Oxygen</li>
+                  <li>(C) Chlorine</li>
+                  <li>(D) Methane</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q5:</strong> The integral ∫ cos²x dx equals:</p>
-          <ul>
-            <li>(A) (x/2) + (sin2x)/4 + C</li>
-            <li>(B) sinx</li>
-            <li>(C) x + C</li>
-            <li>(D) cosx</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q4:</strong> Which acid is known as oil of vitriol?</p>
+                <ul>
+                  <li>(A) HCl</li>
+                  <li>(B) HNO₃</li>
+                  <li>(C) H₂SO₄</li>
+                  <li>(D) H₃PO₄</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q6:</strong> If f(x) = x², then f(x) = ?</p>
-          <ul>
-            <li>(A) x</li>
-            <li>(B) 2x</li>
-            <li>(C) x²</li>
-            <li>(D) 2</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q5:</strong> Which of these is an amphoteric oxide?</p>
+                <ul>
+                  <li>(A) Al₂O₃</li>
+                  <li>(B) Na₂O</li>
+                  <li>(C) CO₂</li>
+                  <li>(D) SO₂</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q7:</strong> The solution of dy/dx = y is:</p>
-          <ul>
-            <li>(A) y = eˣ</li>
-            <li>(B) y = x</li>
-            <li>(C) y = ln(x)</li>
-            <li>(D) y = x²</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q6:</strong> The IUPAC name for CH₃CH₂OH is:</p>
+                <ul>
+                  <li>(A) Ethanol</li>
+                  <li>(B) Methanol</li>
+                  <li>(C) Ethanoic acid</li>
+                  <li>(D) Ethene</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q8:</strong> ∫ eˣ dx equals:</p>
-          <ul>
-            <li>(A) eˣ + C</li>
-            <li>(B) ln(x) + C</li>
-            <li>(C) x·eˣ</li>
-            <li>(D) eˣ/x</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q7:</strong> What type of bond exists in NaCl?</p>
+                <ul>
+                  <li>(A) Covalent</li>
+                  <li>(B) Ionic</li>
+                  <li>(C) Metallic</li>
+                  <li>(D) Hydrogen</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q9:</strong> If z = 3 + 4i, then |z| is:</p>
-          <ul>
-            <li>(A) 5</li>
-            <li>(B) 7</li>
-            <li>(C) 1</li>
-            <li>(D) 25</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q8:</strong> Which of the following is not an allotrope of carbon?</p>
+                <ul>
+                  <li>(A) Graphite</li>
+                  <li>(B) Diamond</li>
+                  <li>(C) Buckminsterfullerene</li>
+                  <li>(D) Quartz</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q10:</strong> The derivative of sin(x) is:</p>
-          <ul>
-            <li>(A) cos(x)</li>
-            <li>(B) sin(x)</li>
-            <li>(C) -cos(x)</li>
-            <li>(D) -sin(x)</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q9:</strong> What is the pH of a 1M HCl solution?</p>
+                <ul>
+                  <li>(A) 7</li>
+                  <li>(B) 1</li>
+                  <li>(C) 0</li>
+                  <li>(D) 14</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q11:</strong> The value of lim(x→0) (1 - cosx)/x² is:</p>
-          <ul>
-            <li>(A) 0</li>
-            <li>(B) 1</li>
-            <li>(C) 1/2</li>
-            <li>(D) ∞</li>
-          </ul>
-        </div>
+              <div className={styles.questionBlock}>
+                <p><strong>Q10:</strong> Which indicator turns pink in basic solution?</p>
+                <ul>
+                  <li>(A) Methyl orange</li>
+                  <li>(B) Litmus</li>
+                  <li>(C) Phenolphthalein</li>
+                  <li>(D) Universal indicator</li>
+                </ul>
+              </div>
 
-        <div className={styles.questionBlock}>
-          <p><strong>Q12:</strong> The general solution of sinx = 0 is:</p>
-          <ul>
-            <li>(A) nπ</li>
-            <li>(B) nπ/2</li>
-            <li>(C) π/2 + nπ</li>
-            <li>(D) 2nπ</li>
-          </ul>
-        </div>
-
-        <div className={styles.questionBlock}>
-          <p><strong>Q13:</strong> The value of ∫₀¹ x³ dx is:</p>
-          <ul>
-            <li>(A) 1/2</li>
-            <li>(B) 1/4</li>
-            <li>(C) 1/3</li>
-            <li>(D) 1/5</li>
-          </ul>
-        </div>
-
-        <div className={styles.questionBlock}>
-          <p><strong>Q14:</strong> If f(x) = sin(x) then f(x) equals:</p>
-          <ul>
-            <li>(A) -sin(x)</li>
-            <li>(B) cos(x)</li>
-            <li>(C) -cos(x)</li>
-            <li>(D) sin(x)</li>
-          </ul>
-        </div>
-
-        <div className={styles.questionBlock}>
-          <p><strong>Q15:</strong> If y = e^(2x), then dy/dx equals:</p>
-          <ul>
-            <li>(A) 2e^(2x)</li>
-            <li>(B) e^(2x)</li>
-            <li>(C) 2x</li>
-            <li>(D) eˣ</li>
-          </ul>
-        </div>
+              {[...Array(40)].map((_, index) => {
+                const num = index + 11;
+                return (
+                  <div className={styles.questionBlock} key={num}>
+                    <p><strong>Q{num}:</strong> Chemistry MCQ placeholder #{num}</p>
+                    <ul>
+                      <li>(A) Option A</li>
+                      <li>(B) Option B</li>
+                      <li>(C) Option C</li>
+                      <li>(D) Option D</li>
+                    </ul>
+                  </div>
+                );
+              })}
         </section>
+
       </main>
 
       <footer className={styles.footer}>
