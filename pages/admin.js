@@ -128,9 +128,9 @@ export default function AdminPanel() {
           <thead>
             <tr>
               <th>Pair</th>
-              <th>Total Messages</th>
-              <th>Current Count</th>
-              <th>Size (KB)</th>
+              <th>Total Messages(all_time)</th>
+              
+              
               <th>Action</th>
             </tr>
           </thead>
@@ -139,8 +139,8 @@ export default function AdminPanel() {
               <tr key={i}>
                 <td>{p.pair}</td>
                 <td>{p.totalCount}</td>
-                <td>{p.currentCount}</td>
-                <td>{p.estimatedKB}</td>
+              
+                
                 <td>
                   <button
                     onClick={() => clearPair(p.pair)}
