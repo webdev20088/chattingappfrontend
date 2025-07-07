@@ -33,7 +33,7 @@ export default function AdminPanel() {
     }
   };
 
-  // Admin clears chat for a pair (and resets total count)
+  // Admin clears chat for a pair (only messages, totalCount remains)
   const clearPair = async (pair) => {
     const [user1, user2] = pair.split('-');
     const res = await fetch(`${BASE_URL}/analytics/clear`, {
@@ -43,7 +43,7 @@ export default function AdminPanel() {
         user: 'aniketadmin',
         user1,
         user2,
-        clearTotal: true  // tells backend to reset totalCount too
+        clearTotal: false // Only clear messages, retain total count
       })
     });
 
@@ -128,9 +128,7 @@ export default function AdminPanel() {
           <thead>
             <tr>
               <th>Pair</th>
-              <th>Total Messages(all_time)</th>
-              
-              
+              <th>Total Messages (all_time)</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -139,8 +137,6 @@ export default function AdminPanel() {
               <tr key={i}>
                 <td>{p.pair}</td>
                 <td>{p.totalCount}</td>
-              
-                
                 <td>
                   <button
                     onClick={() => clearPair(p.pair)}
