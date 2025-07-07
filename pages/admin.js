@@ -101,6 +101,7 @@ export default function AdminPanel() {
               <p>Password: •••••••</p>
               <p>Status: {u.online ? '🟢 Online' : '🔴 Offline'}</p>
               <p>Usage: {u.sessionDuration || 0} min</p>
+              <p>Last Seen: {u.lastSeen}</p>
               <button
                 onClick={() => deleteUser(u.username)}
                 className={styles.clearBtn}
