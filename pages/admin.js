@@ -33,7 +33,7 @@ export default function AdminPanel() {
     }
   };
 
-  // Admin clears chat for a pair (only messages, totalCount remains)
+  // Admin clears chat for a pair (and resets total count)
   const clearPair = async (pair) => {
     const [user1, user2] = pair.split('-');
     const res = await fetch(`${BASE_URL}/analytics/clear`, {
@@ -43,7 +43,7 @@ export default function AdminPanel() {
         user: 'aniketadmin',
         user1,
         user2,
-        clearTotal: false // Only clear messages, retain total count
+        clearTotal: true
       })
     });
 
@@ -91,44 +91,35 @@ export default function AdminPanel() {
       <h1 className={styles.heading}>Admin Dashboard</h1>
       {error && <div className={styles.error}>{error}</div>}
 
+      {/* USERS SECTION — Floating Card Style */}
       <div className={styles.section}>
         <h2>Users</h2>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Password (Encrypted)</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((u, i) => (
-              <tr key={i}>
-                <td>{u.username}</td>
-                <td>{u.password}</td>
-                <td>{u.online ? '🟢 Online' : '🔴 Offline'}</td>
-                <td>
-                  <button
-                    onClick={() => deleteUser(u.username)}
-                    className={styles.clearBtn}
-                  >
-                    Delete User
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className={styles.userGrid}>
+          {users.map((u, i) => (
+            <div key={i} className={styles.userCard}>
+              <h3>{u.username}</h3>
+              <p>Password: •••••••</p>
+              <p>Status: {u.online ? '🟢 Online' : '🔴 Offline'}</p>
+              <p>Usage: {u.sessionDuration || 0} min</p>
+              <button
+                onClick={() => deleteUser(u.username)}
+                className={styles.clearBtn}
+              >
+                Delete User
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
+      {/* CHAT ANALYTICS SECTION — Table */}
       <div className={styles.section}>
         <h2>Chat Analytics</h2>
         <table className={styles.table}>
           <thead>
             <tr>
               <th>Pair</th>
-              <th>Total Messages (all_time)</th>
+              <th>Total Messages (all time)</th>
               <th>Action</th>
             </tr>
           </thead>
