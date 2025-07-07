@@ -11,6 +11,7 @@ export default function AdminPanel() {
 
   const BASE_URL = 'https://mychatappbackend-zzhh.onrender.com';
 
+  // Fetch user list (admin only)
   const fetchUsers = async () => {
     try {
       const res = await fetch(`${BASE_URL}/admin?user=aniketadmin`);
@@ -21,6 +22,7 @@ export default function AdminPanel() {
     }
   };
 
+  // Fetch chat analytics (admin only)
   const fetchPairs = async () => {
     try {
       const res = await fetch(`${BASE_URL}/analytics?user=aniketadmin`);
@@ -31,16 +33,29 @@ export default function AdminPanel() {
     }
   };
 
+  // Admin clears chat for a pair (and resets total count)
   const clearPair = async (pair) => {
     const [user1, user2] = pair.split('-');
-    await fetch(`${BASE_URL}/analytics/clear`, {
+    const res = await fetch(`${BASE_URL}/analytics/clear`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user: 'aniketadmin', user1, user2 })
+      body: JSON.stringify({
+        user: 'aniketadmin',
+        user1,
+        user2,
+        clearTotal: true  // tells backend to reset totalCount too
+      })
     });
-    fetchPairs();
+
+    if (res.ok) {
+      fetchPairs();
+      alert(`Chat history between "${pair}" has been cleared.`);
+    } else {
+      alert('Failed to clear chat for this pair.');
+    }
   };
 
+  // Delete user from system
   const deleteUser = async (username) => {
     if (window.confirm(`Are you sure you want to delete user "${username}"? This cannot be undone.`)) {
       const res = await fetch(`${BASE_URL}/user/${username}`, {
@@ -57,6 +72,7 @@ export default function AdminPanel() {
     }
   };
 
+  // On load and socket update
   useEffect(() => {
     fetchUsers();
     fetchPairs();
@@ -112,8 +128,9 @@ export default function AdminPanel() {
           <thead>
             <tr>
               <th>Pair</th>
-              <th>Messages</th>
-              <th>Size</th>
+              <th>Total Messages</th>
+              <th>Current Count</th>
+              <th>Size (KB)</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -121,10 +138,16 @@ export default function AdminPanel() {
             {pairs.map((p, i) => (
               <tr key={i}>
                 <td>{p.pair}</td>
-                <td>{p.count}</td>
+                <td>{p.totalCount}</td>
+                <td>{p.currentCount}</td>
                 <td>{p.estimatedKB}</td>
                 <td>
-                  <button onClick={() => clearPair(p.pair)} className={styles.clearBtn}>Clear</button>
+                  <button
+                    onClick={() => clearPair(p.pair)}
+                    className={styles.clearBtn}
+                  >
+                    Clear
+                  </button>
                 </td>
               </tr>
             ))}
