@@ -11,7 +11,6 @@ export default function AdminPanel() {
 
   const BASE_URL = 'https://mychatappbackend-zzhh.onrender.com';
 
-  // Fetch user list (admin only)
   const fetchUsers = async () => {
     try {
       const res = await fetch(`${BASE_URL}/admin?user=aniketadmin`);
@@ -22,7 +21,6 @@ export default function AdminPanel() {
     }
   };
 
-  // Fetch chat analytics (admin only)
   const fetchPairs = async () => {
     try {
       const res = await fetch(`${BASE_URL}/analytics?user=aniketadmin`);
@@ -33,29 +31,16 @@ export default function AdminPanel() {
     }
   };
 
-  // Admin clears chat for a pair (and resets total count)
   const clearPair = async (pair) => {
     const [user1, user2] = pair.split('-');
-    const res = await fetch(`${BASE_URL}/analytics/clear`, {
+    await fetch(`${BASE_URL}/analytics/clear`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user: 'aniketadmin',
-        user1,
-        user2,
-        clearTotal: true
-      })
+      body: JSON.stringify({ user: 'aniketadmin', user1, user2 })
     });
-
-    if (res.ok) {
-      fetchPairs();
-      alert(`Chat history between "${pair}" has been cleared.`);
-    } else {
-      alert('Failed to clear chat for this pair.');
-    }
+    fetchPairs();
   };
 
-  // Delete user from system
   const deleteUser = async (username) => {
     if (window.confirm(`Are you sure you want to delete user "${username}"? This cannot be undone.`)) {
       const res = await fetch(`${BASE_URL}/user/${username}`, {
@@ -72,7 +57,6 @@ export default function AdminPanel() {
     }
   };
 
-  // On load and socket update
   useEffect(() => {
     fetchUsers();
     fetchPairs();
@@ -91,36 +75,45 @@ export default function AdminPanel() {
       <h1 className={styles.heading}>Admin Dashboard</h1>
       {error && <div className={styles.error}>{error}</div>}
 
-      {/* USERS SECTION — Floating Card Style */}
       <div className={styles.section}>
         <h2>Users</h2>
-        <div className={styles.userGrid}>
-          {users.map((u, i) => (
-            <div key={i} className={styles.userCard}>
-              <h3>{u.username}</h3>
-              <p>Password: •••••••</p>
-              <p>Status: {u.online ? '🟢 Online' : '🔴 Offline'}</p>
-              <p>Usage: {u.sessionDuration || 0} min</p>
-              <p>Last Seen: {u.lastSeen}</p>
-              <button
-                onClick={() => deleteUser(u.username)}
-                className={styles.clearBtn}
-              >
-                Delete User
-              </button>
-            </div>
-          ))}
-        </div>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Password (Encrypted)</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((u, i) => (
+              <tr key={i}>
+                <td>{u.username}</td>
+                <td>{u.password}</td>
+                <td>{u.online ? '🟢 Online' : '🔴 Offline'}</td>
+                <td>
+                  <button
+                    onClick={() => deleteUser(u.username)}
+                    className={styles.clearBtn}
+                  >
+                    Delete User
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* CHAT ANALYTICS SECTION — Table */}
       <div className={styles.section}>
         <h2>Chat Analytics</h2>
         <table className={styles.table}>
           <thead>
             <tr>
               <th>Pair</th>
-              <th>Total Messages (all time)</th>
+              <th>Messages</th>
+              <th>Size</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -128,14 +121,10 @@ export default function AdminPanel() {
             {pairs.map((p, i) => (
               <tr key={i}>
                 <td>{p.pair}</td>
-                <td>{p.totalCount}</td>
+                <td>{p.count}</td>
+                <td>{p.estimatedKB}</td>
                 <td>
-                  <button
-                    onClick={() => clearPair(p.pair)}
-                    className={styles.clearBtn}
-                  >
-                    Clear
-                  </button>
+                  <button onClick={() => clearPair(p.pair)} className={styles.clearBtn}>Clear</button>
                 </td>
               </tr>
             ))}
