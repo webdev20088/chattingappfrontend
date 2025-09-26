@@ -1,0 +1,147 @@
+/* ✅ Login.module.css for Disguised JEE Portal */
+
+.container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: #2e3c64;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background-color: #e9ecef;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  border-bottom: 1px solid #ccc;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.heroText {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.sections {
+  margin-bottom: 2rem;
+}
+
+.sections h2 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.sections ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: #333;
+}
+
+.mockExample h2 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.questionBlock {
+  background-color: #ffffff;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #0077cc;
+  border-radius: 5px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.questionBlock ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.questionBlock li {
+  padding: 0.25rem 0;
+  color: #444;
+}
+
+.footer {
+  background-color: #f1f1f1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-top: 1px solid #ddd;
+}
+
+.loginBox {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.loginTitle {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #2d2d2d;
+}
+
+.input {
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.button {
+  padding: 0.6rem;
+  font-size: 1rem;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background-color: #005fa3;
+}
+
+.error {
+  color: #d8000c;
+  background-color: #ffd2d2;
+  border: 1px solid #d8000c;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.disclaimer {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 1.5rem;
+  text-align: center;
+}

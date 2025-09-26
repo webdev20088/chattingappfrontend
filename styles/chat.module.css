@@ -1,0 +1,398 @@
+/* ✅ FINAL chat.module.css */
+
+.container {
+  display: flex;
+  height: 97vh;
+  overflow: hidden;
+  background-color: #2e2c2c;
+}
+
+.dateLabel {
+  text-align: center;
+  margin: 10px auto;
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: bold;
+  background: #f0f0f0;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.tagBox {
+  background-color: #eef6ff;
+  border-left: 3px solid #2196f3;
+  padding: 5px 10px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  max-width: 90%;
+}
+
+.tagBox span {
+  cursor: pointer;
+  color: red;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+.contactSection {
+  width: 80%;
+  height: 20%;
+  padding: 10px;
+  border-right: 1px solid gray;
+  overflow-y: auto;
+  background: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #706b6b;
+  border-radius: 12px;       /* Rounded corners */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Float effect */
+}
+
+.contactHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.searchBar {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.contactList {
+  margin-top: 10px;
+}
+
+.contactBox {
+  background: #a71313;
+  padding: 5px;
+  margin: 5px 0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.selectedContact {
+  background: rgb(200, 120, 231);
+}
+
+.online {
+  color: green;
+  font-size: small;
+}
+
+.offline {
+  color: gray;
+  font-size: small;
+}
+
+.chatSection {
+  width: 70%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease-in-out;
+  background-color: #2e2c2c;
+}
+
+.maximized {
+  width: 100% !important;
+}
+
+.tagPreview {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-left: 3px solid #888;
+  font-style: italic;
+  margin-bottom: 5px;
+  cursor: pointer;
+  color: #555;
+  font-size: 0.9em;
+  border-radius: 4px;
+}
+
+.tagBoxWrapper {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+}
+
+.tagBoxinput {
+  background-color: #f1f0f0;
+  padding: 0.6rem 1rem;
+  border-left: 4px solid #007bff;
+  border-radius: 5px;
+  max-width: 100%;
+  word-wrap: break-word;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tagClose {
+  cursor: pointer;
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+.tagBox {
+  background-color: #ddd;
+  padding: 4px 8px;
+  border-left: 4px solid #444;
+  margin-bottom: 6px;
+  font-size: 0.85em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #333;
+  border-radius: 4px;
+}
+ 
+.idstatus {
+  background-color: white;
+}
+
+.highlightOnce {
+  background-color: #000000 !important;
+  transition: background-color 0.3s ease;
+}
+
+.chatHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5%;
+}
+
+.nametext {
+  color: whitesmoke;
+}
+
+.typingText {
+  font-style: italic;
+  color: #666;
+  margin: 5px 0;
+  font-size: smaller;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.chatBox {
+  flex-grow: 1;
+  overflow-y: auto;
+  border: 1px solid gray;
+  margin: 10px 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  background-image: url('/backgrounds/chat-bg.png');
+}
+
+.messageBubble {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 5px 0;
+  max-width: 50%;
+  word-wrap: break-word;
+  border-radius: 12px;
+  position: relative; /* ✅ Needed for emoji popup positioning */
+}
+
+.sent {
+  align-self: flex-end;
+  background-color: rgb(30, 164, 253);
+  color: white;
+  text-align: left;
+  border-bottom-right-radius: 0;
+  font-size: small;
+}
+
+.received {
+  align-self: flex-start;
+  background-color: #f5286c;
+  color: white;
+  text-align: left;
+  border-bottom-left-radius: 0;
+  font-size: small;
+}
+
+.inputRow {
+  display: flex;
+  gap: 10px;
+}
+
+.inputBox {
+  flex-grow: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: black;
+  color: white;
+}
+
+.messageMeta {
+  font-size: 10px;
+  color: #e0e0e0;
+  margin-top: 2px;
+  text-align: right;
+}
+
+.inputSection {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.button {
+  background-color: #942727;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ----- Reactions UI CSS (fixed/extended) ----- */
+
+.reaction-popup-inner {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255,255,255,0.98);
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  align-items: center;
+
+  position: absolute;  /* ✅ stays inside bubble */
+  bottom: 120%;        /* above the bubble */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  max-width: 90vw;     /* responsive containment */
+  flex-wrap: wrap;
+}
+
+.reaction-emoji-btn {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.reaction-emoji-btn:hover {
+  transform: translateY(-4px);
+  background: rgba(0,0,0,0.04);
+}
+
+.reaction-emoji-btn.plus-btn {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.emoji-picker-btn {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.emoji-picker-btn:hover {
+  background: rgba(0,0,0,0.06);
+}
+
+/* reaction badges under messages */
+.reaction-badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  margin-left: 4px;
+}
+
+.reaction-badge {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  padding: 4px 6px;
+  border-radius: 16px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reaction-badge.you-reacted {
+  background: rgba(255,255,255,0.14);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transform: translateY(-1px);
+}
+
+/* Highlight popup for enlarged emoji when clicked */
+.reaction-preview-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  font-size: 24px;
+  text-align: center;
+  z-index: 1000;
+}
+
+.reaction-preview-popup p {
+  margin: 10px 0 0;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Slight override for message bubble spacing when reactions present */
+.messageBubble + .reaction-badge,
+.messageBubble + div > .reaction-badge {
+  margin-top: 6px;
+}
+
+/* keep emoji picker/ popup responsive on small screens */
+@media (max-width: 420px) {
+  .reaction-popup-inner {
+    transform: translateX(-50%) scale(0.95);
+    gap: 6px;
+    padding: 6px;
+  }
+  .reaction-emoji-btn { font-size: 18px; }
+}
+
+/* optional highlight for when message is long-pressed (subtle) */
+.messageBubble:active {
+  filter: brightness(0.98);
+}
+
+.messageBubble {
+  user-select: none;
+  -webkit-user-select: none;
+}
