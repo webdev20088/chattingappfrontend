@@ -1,6 +1,6 @@
 // ✅ Full Disguised Login Page as JEE MCQ Portal
 import { useState } from 'react';
-import styles from '../styles/Login.module.css';
+import styles from '../styles/login.module.css';  
 
 export default function Login() {
   const [username, setUsername] = useState('');
