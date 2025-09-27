@@ -7,14 +7,6 @@
   background-color: #2e2c2c;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  background-color: #000;  /* or #1a1a1a if you want dark gray */
-  height: 100%;
-  width: 100%;
-}
-
 .dateLabel {
   text-align: center;
   margin: 10px auto;
