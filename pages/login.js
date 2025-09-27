@@ -47,33 +47,12 @@ export default function Login() {
 
         <section className={styles.sections}>
          
-  <style>
-    {`
-      @keyframes blink {
-        0% { opacity: 1; }
-        50% { opacity: 0.6; }
-        100% { opacity: 1; }
-      }
-    `}
-  </style>
-
-  <marquee style={{
-      background: 'linear-gradient(90deg, red, yellow)',
-      animation: 'blink 1s infinite',
-      color: 'black',
-      fontWeight:'bold',
-      padding:'6px',
-      borderRadius:'6px'
-    }}>
-    25-09-2025 Update 🚀 — Long-press on a message to react with emojis, pick another to replace it . quick-scroll button ⬇️ added — jump to bottom instantly!
-  </marquee>
-
   
 
 
           <h2>Why Practice With Us?</h2>
           <ul>
-            <li>This is the v2.0 published on 05/07/2025</li>
+           
             <li>✓ 10,000+ curated MCQs from 2002 to 2024</li>
             <li>✓ Chapter-wise categorization</li>
             <li>✓ Realistic exam interface with timer & auto-evaluation</li>
