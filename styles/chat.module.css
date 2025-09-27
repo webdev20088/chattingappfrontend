@@ -20,8 +20,8 @@
 }
 
 .tagBox {
-  background-color: #eef6ff;
-  border-left: 3px solid #2196f3;
+  background-color: black;
+  border-left: 3px solid gray;
   padding: 5px 10px;
   margin-bottom: 8px;
   font-size: 0.9rem;
@@ -225,8 +225,8 @@
 
 .received {
   align-self: flex-start;
-  background-color: #f5286c;
-  color: white;
+  background-color: grey;
+  color: black;
   text-align: left;
   border-bottom-left-radius: 0;
   font-size: small;
