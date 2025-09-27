@@ -201,7 +201,7 @@
   padding: 10px;
   display: flex;
   flex-direction: column;
-  background-image: url('/backgrounds/chat-bg.png');
+  background-color: #000000;
 }
 
 .messageBubble {
@@ -216,7 +216,7 @@
 
 .sent {
   align-self: flex-end;
-  background-color: rgb(30, 164, 253);
+  background-color: rgb(0, 0, 0);
   color: white;
   text-align: left;
   border-bottom-right-radius: 0;
@@ -225,7 +225,7 @@
 
 .received {
   align-self: flex-start;
-  background-color: grey;
+  background-color: gray;
   color: black;
   text-align: left;
   border-bottom-left-radius: 0;
