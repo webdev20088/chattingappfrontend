@@ -2,14 +2,10 @@
 
 .container {
   display: flex;
-  height: 100vh;       /* fill the whole viewport */
-  width: 100vw;        /* make sure it spans full width */
+  height: 97vh;
   overflow: hidden;
-  background-color: #000; /* pure black */
-  margin: 0;           /* remove any default gap */
-  padding: 0;
+  background-color: #2e2c2c;
 }
-
 
 .dateLabel {
   text-align: center;
@@ -200,7 +196,7 @@
 .chatBox {
   flex-grow: 1;
   overflow-y: auto;
-  border: none;
+  border: 1px solid gray;
   margin: 10px 0;
   padding: 10px;
   display: flex;
