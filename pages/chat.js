@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css';
+import '../public/global.css'
 import { useRouter } from 'next/router';
 
 const socket = io('https://mychatappbackend-zzhh.onrender.com');
