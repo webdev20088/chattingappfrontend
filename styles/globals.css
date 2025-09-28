@@ -1,0 +1,11 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: black;   /* Fixes your white border issue */
+  overflow: hidden;    /* Removes scrollbars */
+}
+
+* {
+  box-sizing: border-box;
+}
