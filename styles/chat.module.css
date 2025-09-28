@@ -2,7 +2,7 @@
 
 .container {
   display: flex;
-  height: 97vh;
+  height: 100%;
   overflow: hidden;
   background-color: #2e2c2c;
 }
