@@ -405,3 +405,149 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
+/* ----------------- ADDED / EXTENDED RULES FOR EDIT + DELETE + CONTEXT MENU -----------------
+   NOTE: I did not remove or change any of your original selectors above — the following
+   rules are additions that support the new long-press context menu, edit/delete visuals,
+   and the emoji/context popups. These are safe to paste into your module CSS file.
+*/
+
+/* visual style for a deleted message bubble */
+.deletedMessage {
+  opacity: 0.78;
+  background: rgba(60, 60, 60, 0.45); /* subtle muted bg */
+  color: #cfcfcf;
+  font-style: italic;
+  border-style: dashed;
+  border-color: rgba(255,255,255,0.04);
+}
+
+/* keep message content readable when deleted */
+.deletedMessage .messageContent {
+  color: #bdbdbd;
+}
+
+/* smaller, lighter timestamp for deleted/edited marker */
+.deletedMessage .messageMeta,
+.deletedMessage .messageMeta small {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* small (edited) text aside timestamp — if you'd prefer a separate class you can use this */
+.editedMarker {
+  font-size: 10px;
+  color: #cfcfcf;
+  margin-left: 6px;
+  font-style: italic;
+}
+
+/* id wrapper for the reaction popup anchor (global id used by JS) */
+#reaction-popup {
+  pointer-events: auto;
+}
+
+/* emoji picker popup wrapper (global id used by JS) */
+#emoji-picker-popup {
+  pointer-events: auto;
+  z-index: 10000;
+  border-radius: 10px;
+}
+
+/* context menu wrapper (global id used by JS) */
+#context-menu-popup {
+  pointer-events: auto;
+}
+
+/* ensure context menu buttons look good full-width inside the popup */
+#context-menu-popup .button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #222;
+  padding: 8px 10px;
+  border-radius: 6px;
+  box-shadow: none;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* hover styles for context menu buttons — keep them visible even in dark theme */
+#context-menu-popup .button:hover {
+  background: rgba(0,0,0,0.06);
+  color: #000;
+}
+
+/* responsive adjustments for context menu and emoji pickers on small screens */
+@media (max-width: 480px) {
+  #context-menu-popup {
+    min-width: 140px;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    padding: 8px;
+  }
+
+  #emoji-picker-popup {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: 94vw;
+  }
+}
+
+/* improve accessibility: focus outlines for keyboard users */
+#context-menu-popup .button:focus,
+.reaction-emoji-btn:focus,
+.emoji-picker-btn:focus,
+.reaction-badge:focus {
+  outline: 2px solid rgba(148,39,39,0.6);
+  outline-offset: 2px;
+}
+
+/* subtle drop shadow for popups to separate from dark background */
+#context-menu-popup,
+#reaction-popup,
+#emoji-picker-popup {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+}
+
+/* Make reaction badges slightly denser so counts are clear */
+.reaction-badge span {
+  font-weight: 600;
+}
+
+/* Ensure deleted messages don't overflow weirdly on very small screens */
+@media (max-width: 360px) {
+  .messageBubble {
+    max-width: 75%;
+    padding: 6px 8px;
+  }
+
+  .reaction-popup-inner {
+    bottom: 140%;
+  }
+}
+
+/* keep context menu and popups above other fixed elements */
+#context-menu-popup,
+#reaction-popup,
+#emoji-picker-popup,
+.reaction-preview-popup {
+  z-index: 99999;
+}
+
+/* keep the editing bar (above input) styled cleanly when present — class used inline */
+.editingBar {
+  padding: 6px 10px;
+  background: #222;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* small helper: make sure any global ids we used remain visually hidden from layout shifts */
+#reaction-popup[hidden],
+#emoji-picker-popup[hidden],
+#context-menu-popup[hidden] {
+  display: none !important;
+}

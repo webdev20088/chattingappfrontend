@@ -41,6 +41,20 @@ export default function Chat() {
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [enlargedReaction, setEnlargedReaction] = useState({ visible: false, x: 0, y: 0, reactionEmoji: null, messageId: null });
 
+  // context menu (delete/edit) state (appears under message)
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    messageId: null
+  });
+
+  // editing state: when non-null, it holds the messageId being edited (_id) and original text
+  const [editingMessage, setEditingMessage] = useState({
+    messageId: null,
+    originalText: ''
+  });
+
   const chatBoxRef = useRef(null);
   const typingTimeout = useRef(null);
   const longPressTimer = useRef(null);
@@ -150,6 +164,12 @@ export default function Chat() {
             return { ...oldMsg, reactions: newMsg.reactions || [] };
           }
 
+          // detect edited/deleted changes
+          if ((oldMsg.edited !== newMsg.edited) || (oldMsg.deleted !== newMsg.deleted) || (oldMsg.message !== newMsg.message)) {
+            changed = true;
+            return { ...oldMsg, ...newMsg };
+          }
+
           return oldMsg;
         });
 
@@ -213,7 +233,7 @@ export default function Chat() {
       if (selectedContact) fetchMessages(selectedContact, false); // No force scroll!
     });
 
-    // ====== IMPORTANT: listen to messageUpdated (backend emits this after reaction change) ======
+    // ====== IMPORTANT: listen to messageUpdated (backend emits this after reaction change, edit, delete) ======
     socket.on('messageUpdated', (updatedMsg) => {
       // ensure reactions exist
       updatedMsg.reactions = updatedMsg.reactions || [];
@@ -230,6 +250,13 @@ export default function Chat() {
           return [...prev, updatedMsg];
         }
       });
+
+      // if the updated message is the one we're editing and got changed by backend,
+      // we should clear edit state
+      if (editingMessage.messageId && updatedMsg._id && editingMessage.messageId === updatedMsg._id) {
+        setEditingMessage({ messageId: null, originalText: '' });
+        setMessage('');
+      }
     });
 
     return () => {
@@ -240,7 +267,7 @@ export default function Chat() {
       socket.off('refresh');
       socket.off('messageUpdated');
     };
-  }, [selectedContact, fetchMessages, username]);
+  }, [selectedContact, fetchMessages, username, editingMessage.messageId]);
 
   // fetch lastSeen for selected contact whenever selection or online status changes
   useEffect(() => {
@@ -326,8 +353,37 @@ export default function Chat() {
     setSearchName('');
   };
 
+  // sendMessage now supports both creating a new message and finalizing an edit
   const sendMessage = () => {
     if (!message || !selectedContact) return;
+
+    // If currently editing a message, emit editMessage (do not create a new message)
+    if (editingMessage.messageId) {
+      // find message object to ensure _id present
+      const msgObj = messages.find(m => m._id === editingMessage.messageId);
+      if (!msgObj || !msgObj._id) {
+        // can't edit if original message has no valid _id
+        // fallback: do nothing (preserve input)
+        return;
+      }
+      socket.emit('editMessage', {
+        messageId: editingMessage.messageId,
+        user: username,
+        newText: message,
+        room: `${username}_${selectedContact}`
+      });
+
+      // optimistic UI update: update local message text and mark edited (will be reconciled by server)
+      setMessages(prev => prev.map(m => (m._id === editingMessage.messageId ? { ...m, message, edited: true } : m)));
+
+      // clear editing state
+      setEditingMessage({ messageId: null, originalText: '' });
+      setMessage('');
+      socket.emit('typing', { sender: username, receiver: selectedContact, isTyping: false });
+      return;
+    }
+
+    // normal send
     socket.emit('sendMessage', {
       sender: username,
       receiver: selectedContact,
@@ -382,10 +438,21 @@ export default function Chat() {
     setEmojiPickerOpen(false);
     // clamp coords so popup doesn't go outside chat area
     const { x, y } = clampCoordsToChatBox(clientX, clientY);
+
+    // Reaction popup should appear above the message (translateY in render)
     setReactionPopup({
       visible: true,
       x,
       y,
+      messageId
+    });
+
+    // Context menu should appear slightly below the message
+    const menuY = y + 40; // a bit lower
+    setContextMenu({
+      visible: true,
+      x,
+      y: menuY,
       messageId
     });
   };
@@ -393,6 +460,10 @@ export default function Chat() {
   const closeReactionPopup = () => {
     setReactionPopup({ visible: false, x: 0, y: 0, messageId: null });
     setEmojiPickerOpen(false);
+  };
+
+  const closeContextMenu = () => {
+    setContextMenu({ visible: false, x: 0, y: 0, messageId: null });
   };
 
   const toggleEmojiPicker = () => {
@@ -404,11 +475,11 @@ export default function Chat() {
     // optimistic UI update:
     setMessages(prev => prev.map(m => {
       const id = getMsgId(m);
-      if (id !== messageId) return m;
+      if (id !== messageId && m._id !== messageId) return m;
       const existing = m.reactions || [];
 
       // find existing reaction by current user (single reaction per user)
-      const userReactionIndex = existing.findIndex(r => r.username === username);
+      const userReactionIndex = existing.findIndex(r => r.username === username || r.user === username);
 
       if (userReactionIndex !== -1) {
         const userReaction = existing[userReactionIndex];
@@ -419,18 +490,21 @@ export default function Chat() {
         } else {
           // replace their emoji
           const updated = [...existing];
-          updated[userReactionIndex] = { username, emoji };
+          // normalize reaction object to use 'user' property expected by backend
+          updated[userReactionIndex] = { user: username, emoji };
           return { ...m, reactions: updated };
         }
       } else {
         // add reaction
-        return { ...m, reactions: [...existing, { username, emoji }] };
+        return { ...m, reactions: [...existing, { user: username, emoji }] };
       }
     }));
 
-    // emit to server for persistence — use backend's expected event name and payload
-    // NOTE: backend looks for messageId as ObjectId; ensure messageId is the _id from DB
-    socket.emit('addReaction', { messageId, user: username, emoji, room: `${username}_${selectedContact}` });
+    // emit to server for persistence — prefer to send the real Mongo _id if available
+    const msgObj = messages.find(m => getMsgId(m) === messageId || m._id === messageId);
+    const sendId = (msgObj && msgObj._id) ? msgObj._id : messageId;
+
+    socket.emit('addReaction', { messageId: sendId, user: username, emoji, room: `${username}_${selectedContact}` });
 
     // close popup after selection (small delay so user sees feedback)
     setTimeout(closeReactionPopup, 150);
@@ -439,14 +513,14 @@ export default function Chat() {
   // clicking small reaction badge under message
   const onClickReactionBadge = (messageId, emoji) => {
     // check if current user has this emoji on this message
-    const msg = messages.find(m => getMsgId(m) === messageId);
+    const msg = messages.find(m => getMsgId(m) === messageId || m._id === messageId);
     if (!msg) return;
     const existing = msg.reactions || [];
-    const userReact = existing.find(r => r.username === username);
+    const userReact = existing.find(r => r.username === username || r.user === username);
 
     if (userReact && userReact.emoji === emoji) {
       // current user clicked their own reaction -> remove (toggle)
-      onSelectEmoji(emoji, messageId); // onSelectEmoji toggles/remove if same emoji
+      onSelectEmoji(emoji, msg._id || messageId); // onSelectEmoji toggles/remove if same emoji
       return;
     }
 
@@ -454,7 +528,7 @@ export default function Chat() {
     const x = window.innerWidth / 2;
     const y = window.innerHeight / 2;
 
-    setEnlargedReaction({ visible: true, x, y, reactionEmoji: emoji, messageId });
+    setEnlargedReaction({ visible: true, x, y, reactionEmoji: emoji, messageId: msg._id || messageId });
   };
 
   const closeEnlargedReaction = () => setEnlargedReaction({ visible: false, x: 0, y: 0, reactionEmoji: null, messageId: null });
@@ -465,11 +539,14 @@ export default function Chat() {
       // if click on reaction popup or emoji picker -> do nothing
       const rp = document.getElementById('reaction-popup');
       const ep = document.getElementById('emoji-picker-popup');
+      const cm = document.getElementById('context-menu-popup');
       if (rp && rp.contains(e.target)) return;
       if (ep && ep.contains(e.target)) return;
+      if (cm && cm.contains(e.target)) return;
 
       closeReactionPopup();
       closeEnlargedReaction();
+      closeContextMenu();
     };
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('touchstart', handleClickOutside);
@@ -543,11 +620,70 @@ export default function Chat() {
     const reactions = m.reactions || [];
     const map = {};
     reactions.forEach(r => {
+      const usernameKey = r.username || r.user || '';
       map[r.emoji] = map[r.emoji] || { count: 0, users: [] };
       map[r.emoji].count += 1;
-      map[r.emoji].users.push(r.username);
+      map[r.emoji].users.push(usernameKey);
     });
     return map; // { '👍': {count:2, users:['a','b']}, ...}
+  };
+
+  // Delete message handler (both sender or receiver)
+  const handleDeleteMessage = (messageId) => {
+    // find message in state to get real _id if present
+    const msgObj = messages.find(m => getMsgId(m) === messageId || m._id === messageId);
+    const sendId = (msgObj && msgObj._id) ? msgObj._id : messageId;
+    if (!sendId) return;
+
+    // who is requesting delete: username
+    const deleter = username;
+
+    // optimistic update: mark deleted locally
+    setMessages(prev => prev.map(m => {
+      if (m._id === sendId || getMsgId(m) === messageId) {
+        return { ...m, deleted: true, deletedBy: deleter, message: `${deleter} deleted this message` };
+      }
+      return m;
+    }));
+
+    // emit to server
+    socket.emit('deleteMessage', { messageId: sendId, user: deleter, room: `${username}_${selectedContact}` });
+
+    // close context menu
+    closeContextMenu();
+    closeReactionPopup();
+  };
+
+  // Edit message handler (only sender)
+  const handleStartEditMessage = (messageId) => {
+    // find message
+    const msgObj = messages.find(m => getMsgId(m) === messageId || m._id === messageId);
+    const sendId = (msgObj && msgObj._id) ? msgObj._id : messageId;
+    if (!msgObj || !sendId) return;
+
+    // only sender can edit
+    if (msgObj.sender !== username) {
+      // unauthorized - do nothing
+      closeContextMenu();
+      return;
+    }
+
+    // open editing: put text into input and set editingMessage state
+    setEditingMessage({ messageId: sendId, originalText: msgObj.message || '' });
+    setMessage(msgObj.message || '');
+    // focus the input element if present
+    const inputEl = document.querySelector(`.${styles.inputBox}`);
+    if (inputEl) inputEl.focus();
+
+    // close context menu & reaction popup
+    closeContextMenu();
+    closeReactionPopup();
+  };
+
+  // cancel editing
+  const cancelEdit = () => {
+    setEditingMessage({ messageId: null, originalText: '' });
+    setMessage('');
   };
 
   return (
@@ -618,19 +754,23 @@ export default function Chat() {
                   const mid = getMsgId(m);
                   const reactMap = reactionSummary(m);
                   const sortedReacts = Object.keys(reactMap); // order not important
-                  const userReact = (m.reactions || []).find(r => r.username === username);
+                  const userReact = (m.reactions || []).find(r => (r.username === username || r.user === username));
+
+                  // if message is marked deleted, show placeholder and disable edit & tag & long-press actions
+                  const isDeleted = !!m.deleted;
+                  const isEdited = !!m.edited;
 
                   return (
                     <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: m.sender === username ? 'flex-end' : 'flex-start' }}>
                       <div
                         data-msg={m.message}
-                        className={`${styles.messageBubble} ${m.sender === username ? styles.sent : styles.received}`}
-                        onDoubleClick={() => handleTag(m.message)}
+                        className={`${styles.messageBubble} ${m.sender === username ? styles.sent : styles.received} ${isDeleted ? styles.deletedMessage : ''}`}
+                        onDoubleClick={() => { if (!isDeleted) handleTag(m.message); }}
                         // long-press handlers:
-                        onMouseDown={(e) => onMsgPointerDown(e, m)}
+                        onMouseDown={(e) => { if (!isDeleted) onMsgPointerDown(e, m); }}
                         onMouseUp={onMsgPointerUp}
                         onMouseLeave={onMsgPointerUp}
-                        onTouchStart={(e) => onMsgPointerDown(e, m)}
+                        onTouchStart={(e) => { if (!isDeleted) onMsgPointerDown(e, m); }}
                         onTouchEnd={onMsgPointerUp}
                       >
                         {m.tag && (
@@ -638,15 +778,26 @@ export default function Chat() {
                             {m.tag.length > 40 ? m.tag.slice(0, 40) + '...' : m.tag}
                           </div>
                         )}
-                        {/* <-- replaced raw text with linkify so URLs become anchors but everything else unchanged */}
-                        <div className={styles.messageContent}>{linkify(m.message)}</div>
+                        {/* message content */}
+                        <div className={styles.messageContent}>
+                          {/* If deleted, show explicit deleted text */}
+                          {isDeleted ? (
+                            <em>{m.message || `${m.deletedBy || 'Someone'} deleted this message`}</em>
+                          ) : (
+                            linkify(m.message)
+                          )}
+                        </div>
                         <div className={styles.messageMeta}>
-                          <small>{new Date(m.timestamp).toLocaleTimeString()} {m.sender === username ? (m.read ? '✓✓' : '✓') : ''}</small>
+                          <small>
+                            {new Date(m.timestamp).toLocaleTimeString()}
+                            {m.sender === username ? (m.read ? ' ✓✓' : ' ✓') : ''}
+                            {isEdited && !isDeleted ? ' (edited)' : ''}
+                          </small>
                         </div>
                       </div>
 
                       {/* reactions bar under each message */}
-                      {sortedReacts.length > 0 && (
+                      {sortedReacts.length > 0 && !isDeleted && (
                         <div style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'center' }}>
                           {sortedReacts.map((emoji) => {
                             const info = reactMap[emoji];
@@ -668,7 +819,7 @@ export default function Chat() {
                                 title={info.users.join(', ')}
                               >
                                 <span style={{ fontSize: 14 }}>{emoji}</span>
-                                
+                                <span style={{ fontSize: 12 }}>{info.count}</span>
                               </div>
                             );
                           })}
@@ -711,6 +862,50 @@ export default function Chat() {
                 >
                   ➕
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Context menu (delete / edit) shown under message */}
+          {contextMenu.visible && (
+            <div
+              id="context-menu-popup"
+              style={{
+                position: 'fixed',
+                left: contextMenu.x,
+                top: contextMenu.y,
+                transform: 'translate(-50%, 0)',
+                zIndex: 9999,
+                background: '#fff',
+                boxShadow: '0 6px 18px rgba(0,0,0,0.15)',
+                borderRadius: 8,
+                padding: 8,
+                minWidth: 160
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <button
+                  className={styles.button}
+                  onClick={() => handleDeleteMessage(contextMenu.messageId)}
+                >
+                  Delete
+                </button>
+                {/* Edit button only visible if current user is the sender of that message */}
+                {(() => {
+                  const msgObj = messages.find(m => getMsgId(m) === contextMenu.messageId || m._id === contextMenu.messageId);
+                  if (msgObj && msgObj.sender === username && !msgObj.deleted) {
+                    return (
+                      <button
+                        className={styles.button}
+                        onClick={() => handleStartEditMessage(contextMenu.messageId)}
+                      >
+                        Edit
+                      </button>
+                    );
+                  }
+                  return null;
+                })()}
+                <button className={styles.button} onClick={closeContextMenu}>Cancel</button>
               </div>
             </div>
           )}
@@ -762,9 +957,9 @@ export default function Chat() {
               <div style={{ marginTop: 6, fontSize: 12 }}>
                 {/* show list of users who reacted with this emoji (if message present) */}
                 {(() => {
-                  const msg = messages.find(m => getMsgId(m) === enlargedReaction.messageId);
+                  const msg = messages.find(m => getMsgId(m) === enlargedReaction.messageId || m._id === enlargedReaction.messageId);
                   if (!msg) return null;
-                  const users = (msg.reactions || []).filter(r => r.emoji === enlargedReaction.reactionEmoji).map(r => r.username);
+                  const users = (msg.reactions || []).filter(r => r.emoji === enlargedReaction.reactionEmoji).map(r => r.username || r.user);
                   return <div>{users.join(', ')}</div>;
                 })()}
               </div>
@@ -783,6 +978,14 @@ export default function Chat() {
             </div>
           )}
 
+          {/* If editing, show a small editing bar above input */}
+          {editingMessage.messageId && (
+            <div style={{ padding: '6px 10px', background: '#222', color: '#fff', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ flex: 1, fontSize: 14 }}>Editing message</div>
+              <button className={styles.button} onClick={cancelEdit}>Cancel</button>
+            </div>
+          )}
+
           <div className={styles.inputSection}>
             <input
               value={message}
@@ -791,7 +994,7 @@ export default function Chat() {
               className={styles.inputBox}
               onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }}
             />
-            <button onClick={sendMessage} className={styles.button}>Send</button>
+            <button onClick={sendMessage} className={styles.button}>{editingMessage.messageId ? 'Save' : 'Send'}</button>
           </div>
 
           {/* floating scroll-to-bottom button */}
