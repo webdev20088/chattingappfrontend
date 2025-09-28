@@ -2,9 +2,15 @@
 
 .container {
   display: flex;
-  height: 98vh;
+  /* height: 98vh;  ❌ replaced */
+  height: 100dvh; /* ✅ dynamic viewport height for iOS Safari */
   overflow: hidden;
   background-color: #2e2c2c;
+
+  /* ensure safe areas are respected */
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 .dateLabel {
@@ -258,6 +264,9 @@
   gap: 10px;
   align-items: center;
   width: 100%;
+
+  /* ✅ add safe-area padding so input isn’t hidden by Safari bar */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .button {
@@ -269,7 +278,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
 /* ----- Reactions UI CSS (fixed/extended) ----- */
