@@ -905,7 +905,7 @@ export default function Chat() {
                   }
                   return null;
                 })()}
-                <button className={styles.button} onClick={closeContextMenu}>Cancel</button>
+               
               </div>
             </div>
           )}
