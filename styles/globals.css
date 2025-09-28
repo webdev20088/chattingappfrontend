@@ -1,9 +1,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  background: black;   /* Fixes your white border issue */
-  overflow: hidden;    /* Removes scrollbars */
+  min-height: 100%;          /* allow page to grow vertically */
+  height: auto;              /* don’t lock it to 100% */
+  background: #2e2c2c;       /* match your .container background */
+  overflow-x: hidden;        /* only block sideways scroll */
+  -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
 }
 
 * {
