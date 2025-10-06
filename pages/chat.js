@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css';
+import emailjs from 'emailjs-com';
 
 import { useRouter } from 'next/router';
 
@@ -62,6 +63,12 @@ export default function Chat() {
   const router = useRouter();
 
   const defaultEmojis = ['👍', '❤️', '😊' ,'🙈', '🤐' , '👋' , '😭']; 
+
+  // EmailJS configuration (provided)
+  const EMAILJS_SERVICE_ID = 'service_xkqpd1t';
+  const EMAILJS_TEMPLATE_ID = 'template_nf9pz38';
+  const EMAILJS_PUBLIC_KEY = 'Emkv7AJc62xFb7r_f';
+  // NOTE: private keys should not be used client-side. The public key is what EmailJS expects for client calls.
 
   // clamp popup coordinates inside the chatBox to avoid escaping the UI
   const clampCoordsToChatBox = (x, y) => {
@@ -686,6 +693,29 @@ export default function Chat() {
     setMessage('');
   };
 
+  // ---- New: handle status-dot click (only when chat is with 'ditto') ----
+  const handleStatusDotClick = async () => {
+    if (!selectedContact) return;
+    // only allow action when chat target is 'ditto' (exact match)
+    if (selectedContact !== 'ditto') return;
+
+    // prepare template params respecting typical EmailJS fields:
+    const templateParams = {
+      to_name: selectedContact, // "whome"
+      from_name: username || 'Unknown', // "by whome"
+      message: `${username || 'Someone'} clicked the status dot for ${selectedContact} on ${new Date().toLocaleString()}` // "what will be the message"
+    };
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
+      // quick UI feedback
+      alert('Notification sent via EmailJS.');
+    } catch (err) {
+      console.error('EmailJS send error:', err);
+      alert('Failed to send notification (EmailJS).');
+    }
+  };
+
   return (
     <div className={styles.container}>
       {!maximized && (
@@ -714,7 +744,38 @@ export default function Chat() {
         <div className={`${styles.chatSection} ${maximized ? styles.maximized : ''}`}>
           <div className={styles.chatHeader}>
             <button onClick={() => window.location.reload()} className={styles.button}>⬅</button>
-            <h3 className={styles.idstatus}>{selectedContact} {onlineUsers.includes(selectedContact) ? '(🟢)' : '(🔴)'}</h3>
+
+            {/* Modified header to keep exact behavior but make dot clickable when chatting with 'ditto' */}
+            <h3 className={styles.idstatus} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>{selectedContact}</span>
+
+              {/* If the selected contact is 'ditto', render a pressable button (for ANY user who opened ditto chat).
+                  Otherwise show simple status text like before. */}
+              {selectedContact === 'ditto' ? (
+                <button
+                  onClick={handleStatusDotClick}
+                  title="Press to notify via EmailJS"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 22,
+                    height: 22,
+                    borderRadius: '50%',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    background: onlineUsers.includes(selectedContact) ? '#2ecc71' : '#e74c3c',
+                    color: '#fff',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                  }}
+                >
+                  {onlineUsers.includes(selectedContact) ? '🟢' : '🔴'}
+                </button>
+              ) : (
+                <span style={{ fontSize: '0.95rem' }}>{onlineUsers.includes(selectedContact) ? '(🟢)' : '(🔴)'}</span>
+              )}
+            </h3>
 
             {/* show last seen (when not online) */}
             {!onlineUsers.includes(selectedContact) && lastSeen && (
