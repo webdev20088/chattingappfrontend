@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css';
-import emailjs from 'emailjs-com';
+import emailjs from "@emailjs/browser";
 
 import { useRouter } from 'next/router';
 
