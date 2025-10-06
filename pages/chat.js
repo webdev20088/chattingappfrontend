@@ -65,9 +65,9 @@ export default function Chat() {
   const defaultEmojis = ['👍', '❤️', '😊' ,'🙈', '🤐' , '👋' , '😭']; 
 
   // EmailJS configuration (provided)
-  const EMAILJS_SERVICE_ID = 'service_xkqpd1t';
+  const EMAILJS_SERVICE_ID = 'service_zvy2vyl';
   const EMAILJS_TEMPLATE_ID = 'template_nf9pz38';
-  const EMAILJS_PUBLIC_KEY = 'Emkv7AJc62xFb7r_f';
+  const EMAILJS_PUBLIC_KEY = 'XvXZ1noU8RGPNrKQB';
   // NOTE: private keys should not be used client-side. The public key is what EmailJS expects for client calls.
 
   // clamp popup coordinates inside the chatBox to avoid escaping the UI
