@@ -1,0 +1,149 @@
+/* sorry.module.css */
+
+.container {
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #89f7fe, #66a6ff);
+}
+
+.tile {
+  background: linear-gradient(145deg, #ffffff, #f0f4ff);
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 90%;
+  margin: 1rem auto;
+  transition: all 0.5s ease;
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.checkboxGroup {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.checkboxGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #444;
+}
+
+.checkboxGroup input[type="checkbox"],
+.checkboxGroup input[type="radio"] {
+  margin-right: 0.5rem;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #4a90e2;
+  color: white;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background: #357ab8;
+}
+
+.gifContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-height: 400px;
+  overflow-y: scroll;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.gifContainer img {
+  width: 150px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.videoContainer video {
+  width: 80%;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.questionTile {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff1f0, #ffe4e1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.questionTile img {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .tile {
+    padding: 1.5rem;
+    width: 95%;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.6rem;
+  }
+
+  .gifContainer img {
+    width: 120px;
+  }
+
+  .questionTile img {
+    max-width: 100%;
+  }
+}
