@@ -97,11 +97,12 @@ export default function Sorry() {
     newAnswers[qIndex] = answer;
     setQuestionAnswers(newAnswers);
 
-    const newImages = [...currentQuestionImages];
-    if (answer === 'yes') newImages[qIndex] = `https://images.unsplash.com/photo-1612831667634-6c6a3e5fa4a1?w=400&text=Yes+Q${qIndex+1}`;
-    if (answer === 'no') newImages[qIndex] = `https://images.unsplash.com/photo-1612831455544-1cdeec15b9c5?w=400&text=No+Q${qIndex+1}`;
-    setCurrentQuestionImages(newImages);
-  };
+     const newImages = [...currentQuestionImages];
+  if (answer === 'yes')
+    newImages[qIndex] = `https://placehold.co/400x300/00ff99/000000?text=Yes+Q${qIndex + 1}`;
+  if (answer === 'no')
+    newImages[qIndex] = `https://placehold.co/400x300/ff6666/000000?text=No+Q${qIndex + 1}`;
+  setCurrentQuestionImages(newImages);
 
   const handleShowQuestion = (qIndex) => {
     const newImages = [...currentQuestionImages];
