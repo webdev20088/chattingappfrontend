@@ -82,21 +82,45 @@
   background: #357ab8;
 }
 
+/* ──────────────────────────────── */
+/* UPDATED GIF TILE STYLE SECTION  */
+/* ──────────────────────────────── */
+
+.gifTile {
+  background: linear-gradient(145deg, #ffffff, #eaf1ff);
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  width: 100%;
+  margin: 1rem auto;
+  transition: all 0.3s ease;
+}
+
+.gifCount {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+
+.gifImage {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  margin-bottom: 1rem;
+}
+
+/* Keep scroll behavior for any overflowed list */
 .gifContainer {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-height: 400px;
-  overflow-y: scroll;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  max-height: 80vh;
   padding: 0.5rem;
 }
 
-.gifContainer img {
-  width: 150px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
+/* ──────────────────────────────── */
 
 .videoContainer video {
   width: 80%;
@@ -139,8 +163,8 @@
     padding: 0.6rem;
   }
 
-  .gifContainer img {
-    width: 120px;
+  .gifImage {
+    width: 100%;
   }
 
   .questionTile img {
