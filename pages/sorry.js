@@ -121,7 +121,7 @@ export default function Sorry() {
           <p className={styles.tileText}>Please read this carefully before proceeding.</p>
           <div className={styles.checkboxGroup}>
             <label>
-              <input type="checkbox" disabled={!checkbox1Enabled} checked={checkbox1} onChange={e => setCheckbox1(e.target.checked)} />
+              <input type="checkbox"  checked={checkbox1} onChange={e => setCheckbox1(e.target.checked)} />
               Head Phone
             </label>
             <label>
