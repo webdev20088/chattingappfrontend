@@ -84,6 +84,14 @@ export default function Sorry() {
     "https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif",
     "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
     "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif",
+    "https://media.giphy.com/media/3oKIPwoeGErMmaI43C/giphy.gif",
+    "https://media.giphy.com/media/3o6ZsYmT8QpI5x6qFG/giphy.gif",
+    "https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif",
+    "https://media.giphy.com/media/26gssIytJvy1b1THO/giphy.gif",
+    "https://media.giphy.com/media/3ohs4y1Cgk3wPFTxCo/giphy.gif",
+    "https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif",
+    "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+    "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif",
     "https://media.giphy.com/media/3oKIPwoeGErMmaI43C/giphy.gif"
   ];
 
