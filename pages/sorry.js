@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '../styles/sorry.module.css';
 
-const usernameToRedirect = 'a'; // Constant username to redirect to chat
+const usernameToRedirect = 'flora'; // Constant username to redirect to chat
 
 export default function Sorry() {
   const [stage, setStage] = useState(0); // 0: disclaimer, 1: GIFs, 2: questions, 3: video, 4: GIFs again, 5: final note
