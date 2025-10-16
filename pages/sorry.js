@@ -1,7 +1,7 @@
 // sorry.js
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import styles from './sorry.module.css';
+import styles from '../styles/sorry.module.css';
 
 const usernameToRedirect = 'a'; // Constant username to redirect to chat
 
