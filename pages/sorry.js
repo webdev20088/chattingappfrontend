@@ -1,8 +1,9 @@
 // sorry.js
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import styles from './sorry.module.css';
 
-const usernameToRedirect = 'smalluser'; // Constant username to redirect to chat
+const usernameToRedirect = 'a'; // Constant username to redirect to chat
 
 export default function Sorry() {
   const [stage, setStage] = useState(0); // 0: disclaimer, 1: GIFs, 2: questions, 3: video, 4: GIFs again, 5: final note
@@ -14,18 +15,18 @@ export default function Sorry() {
   const [checkbox1Enabled, setCheckbox1Enabled] = useState(false);
 
   // Question states
-  const [questionImages, setQuestionImages] = useState([
-    'https://images.unsplash.com/photo-1612831667634-6c6a3e5fa4a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTI3fDB8MHwxfHNlYXJjaHwxfHxxdWVzdGlvbnxlbnwwfHx8fDE2OTczODQwNjQ&ixlib=rb-4.0.3&q=80&w=400',
-    'https://images.unsplash.com/photo-1612831455544-1cdeec15b9c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTI3fDB8MHwxfHNlYXJjaHwzfHxxdWVzdGlvbnxlbnwwfHx8fDE2OTczODQwNzY&ixlib=rb-4.0.3&q=80&w=400',
-    'https://images.unsplash.com/photo-1612831555541-8d6a9a3a3bfa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTI3fDB8MHwxfHNlYXJjaHw2fHxxdWVzdGlvbnxlbnwwfHx8fDE2OTczODQwODY&ixlib=rb-4.0.3&q=80&w=400',
-    'https://images.unsplash.com/photo-1612831623455-9fa02b2efb72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTI3fDB8MHwxfHNlYXJjaHw5fHxxdWVzdGlvbnxlbnwwfHx8fDE2OTczODQwOTY&ixlib=rb-4.0.3&q=80&w=400'
-  ]);
+  const questionImages = [
+    'https://images.unsplash.com/photo-1612831667634-6c6a3e5fa4a1?w=400',
+    'https://images.unsplash.com/photo-1612831455544-1cdeec15b9c5?w=400',
+    'https://images.unsplash.com/photo-1612831555541-8d6a9a3a3bfa?w=400',
+    'https://images.unsplash.com/photo-1612831623455-9fa02b2efb72?w=400'
+  ];
 
   const [currentQuestionImages, setCurrentQuestionImages] = useState([...questionImages]);
   const [questionAnswers, setQuestionAnswers] = useState([null, null, null, null]);
   const [nextEnabled, setNextEnabled] = useState(false);
   const [nextCooldown, setNextCooldown] = useState(30);
-  
+
   // Video cooldown
   const [videoNextEnabled, setVideoNextEnabled] = useState(false);
   const [videoCooldown, setVideoCooldown] = useState(20);
@@ -86,14 +87,14 @@ export default function Sorry() {
     "https://media.giphy.com/media/3o7TKP1yBQxExH3Vtu/giphy.gif",
     "https://media.giphy.com/media/xT9IgDEI1iZyb2wqo8/giphy.gif",
     "https://media.giphy.com/media/3o7TKL5V4vBbzjD2z6/giphy.gif",
-    "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
-    "https://media.giphy.com/media/3o7TKP1yBQxExH3Vtu/giphy.gif",
-    "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif",
     "https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif",
-    "https://media.giphy.com/media/l0Exk8EUzSLsrErEQ/giphy.gif",
     "https://media.giphy.com/media/3oKIPwoeGErMmaI43C/giphy.gif",
+    "https://media.giphy.com/media/l0Exk8EUzSLsrErEQ/giphy.gif",
     "https://media.giphy.com/media/3o7TKL5V4vBbzjD2z6/giphy.gif",
-    "https://media.giphy.com/media/xT9IgDEI1iZyb2wqo8/giphy.gif"
+    "https://media.giphy.com/media/xT9IgDEI1iZyb2wqo8/giphy.gif",
+    "https://media.giphy.com/media/3o6ZsYmT8QpI5x6qFG/giphy.gif",
+    "https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif",
+    "https://media.giphy.com/media/26gssIytJvy1b1THO/giphy.gif"
   ];
 
   // Handlers
@@ -106,8 +107,8 @@ export default function Sorry() {
     setQuestionAnswers(newAnswers);
 
     const newImages = [...currentQuestionImages];
-    if (answer === 'yes') newImages[qIndex] = `https://images.unsplash.com/photo-1612831667634-6c6a3e5fa4a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&text=Yes+Q${qIndex+1}`;
-    if (answer === 'no') newImages[qIndex] = `https://images.unsplash.com/photo-1612831455544-1cdeec15b9c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&text=No+Q${qIndex+1}`;
+    if (answer === 'yes') newImages[qIndex] = `https://images.unsplash.com/photo-1612831667634-6c6a3e5fa4a1?w=400&text=Yes+Q${qIndex+1}`;
+    if (answer === 'no') newImages[qIndex] = `https://images.unsplash.com/photo-1612831455544-1cdeec15b9c5?w=400&text=No+Q${qIndex+1}`;
     setCurrentQuestionImages(newImages);
   };
   const handleShowQuestion = (qIndex) => {
@@ -153,7 +154,9 @@ export default function Sorry() {
         <div className={styles.tile}>
           <h2>Enjoy these GIFs</h2>
           <div className={styles.gifContainer}>
-            {gifs.map((gif, i) => <img key={i} src={gif} alt={`gif-${i}`} />)}
+            {gifs.map((gif, i) => (
+              <Image key={i} src={gif} alt={`gif-${i}`} width={150} height={150} unoptimized />
+            ))}
           </div>
           <div className={styles.buttonGroup}>
             <button onClick={handleNextGIFs}>Next</button>
@@ -168,7 +171,7 @@ export default function Sorry() {
           {currentQuestionImages.map((img, index) => (
             <div key={index} className={styles.questionTile}>
               <p>Question {index + 1}</p>
-              <img src={img} alt={`question-${index}`} />
+              <Image src={img} alt={`question-${index}`} width={300} height={300} unoptimized />
               <div className={styles.checkboxGroup}>
                 <label>
                   <input type="radio" name={`q${index}`} onChange={() => handleQuestionAnswer(index, 'yes')} /> Yes
@@ -206,7 +209,9 @@ export default function Sorry() {
         <div className={styles.tile}>
           <h2>Enjoy More GIFs</h2>
           <div className={styles.gifContainer}>
-            {gifs.map((gif, i) => <img key={i} src={gif} alt={`gif2-${i}`} />)}
+            {gifs.map((gif, i) => (
+              <Image key={i} src={gif} alt={`gif2-${i}`} width={150} height={150} unoptimized />
+            ))}
           </div>
           <div className={styles.buttonGroup}>
             <button onClick={handleSecondGIFNext}>Next</button>
@@ -217,8 +222,8 @@ export default function Sorry() {
       {/* Stage 5: Final Note */}
       {stage === 5 && (
         <div className={styles.tile}>
-          <h2>Editor's Note</h2>
-          <p>This is an important editor's note.</p>
+          <h2>Editor&apos;s Note</h2>
+          <p>This is an important editor&apos;s note.</p>
           <div className={styles.buttonGroup}>
             <button onClick={handleFinalProceed}>Proceed to Chat</button>
           </div>
