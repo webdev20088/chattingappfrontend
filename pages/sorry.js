@@ -93,16 +93,17 @@ export default function Sorry() {
   const handleNextGIFs = () => setStage(2);
 
   const handleQuestionAnswer = (qIndex, answer) => {
-    const newAnswers = [...questionAnswers];
-    newAnswers[qIndex] = answer;
-    setQuestionAnswers(newAnswers);
+  const newAnswers = [...questionAnswers];
+  newAnswers[qIndex] = answer;
+  setQuestionAnswers(newAnswers);
 
-     const newImages = [...currentQuestionImages];
+  const newImages = [...currentQuestionImages];
   if (answer === 'yes')
     newImages[qIndex] = `https://placehold.co/400x300/00ff99/000000?text=Yes+Q${qIndex + 1}`;
   if (answer === 'no')
     newImages[qIndex] = `https://placehold.co/400x300/ff6666/000000?text=No+Q${qIndex + 1}`;
   setCurrentQuestionImages(newImages);
+};
 
   const handleShowQuestion = (qIndex) => {
     const newImages = [...currentQuestionImages];
