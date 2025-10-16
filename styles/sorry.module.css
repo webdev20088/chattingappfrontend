@@ -22,13 +22,13 @@
   transition: all 0.5s ease;
 }
 
-h2 {
+.tileTitle {
   font-size: 1.8rem;
   margin-bottom: 1rem;
   color: #333;
 }
 
-p {
+.tileText {
   font-size: 1rem;
   color: #555;
   line-height: 1.5;
@@ -62,7 +62,7 @@ p {
   flex-wrap: wrap;
 }
 
-button {
+.button {
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
   border: none;
@@ -73,12 +73,12 @@ button {
   color: white;
 }
 
-button:disabled {
+.button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-button:hover:not(:disabled) {
+.button:hover:not(:disabled) {
   background: #357ab8;
 }
 
@@ -126,15 +126,15 @@ button:hover:not(:disabled) {
     width: 95%;
   }
 
-  h2 {
+  .tileTitle {
     font-size: 1.5rem;
   }
 
-  p {
+  .tileText {
     font-size: 0.95rem;
   }
 
-  button {
+  .button {
     width: 100%;
     padding: 0.6rem;
   }

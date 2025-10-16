@@ -1,4 +1,4 @@
-// sorry.js
+// pages/sorry.js
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '../styles/sorry.module.css';
@@ -82,25 +82,14 @@ export default function Sorry() {
     "https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif",
     "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
     "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif",
-    "https://media.giphy.com/media/3oKIPwoeGErMmaI43C/giphy.gif",
-    "https://media.giphy.com/media/l0Exk8EUzSLsrErEQ/giphy.gif",
-    "https://media.giphy.com/media/3o7TKP1yBQxExH3Vtu/giphy.gif",
-    "https://media.giphy.com/media/xT9IgDEI1iZyb2wqo8/giphy.gif",
-    "https://media.giphy.com/media/3o7TKL5V4vBbzjD2z6/giphy.gif",
-    "https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif",
-    "https://media.giphy.com/media/3oKIPwoeGErMmaI43C/giphy.gif",
-    "https://media.giphy.com/media/l0Exk8EUzSLsrErEQ/giphy.gif",
-    "https://media.giphy.com/media/3o7TKL5V4vBbzjD2z6/giphy.gif",
-    "https://media.giphy.com/media/xT9IgDEI1iZyb2wqo8/giphy.gif",
-    "https://media.giphy.com/media/3o6ZsYmT8QpI5x6qFG/giphy.gif",
-    "https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif",
-    "https://media.giphy.com/media/26gssIytJvy1b1THO/giphy.gif"
+    "https://media.giphy.com/media/3oKIPwoeGErMmaI43C/giphy.gif"
   ];
 
   // Handlers
   const handleDisclaimerProceed = () => setStage(1);
   const handleCancel = () => window.location.href = `/chat?username=${usernameToRedirect}`;
   const handleNextGIFs = () => setStage(2);
+
   const handleQuestionAnswer = (qIndex, answer) => {
     const newAnswers = [...questionAnswers];
     newAnswers[qIndex] = answer;
@@ -111,11 +100,13 @@ export default function Sorry() {
     if (answer === 'no') newImages[qIndex] = `https://images.unsplash.com/photo-1612831455544-1cdeec15b9c5?w=400&text=No+Q${qIndex+1}`;
     setCurrentQuestionImages(newImages);
   };
+
   const handleShowQuestion = (qIndex) => {
     const newImages = [...currentQuestionImages];
     newImages[qIndex] = questionImages[qIndex];
     setCurrentQuestionImages(newImages);
   };
+
   const handleQuestionsNext = () => setStage(3);
   const handleVideoNext = () => setStage(4);
   const handleSecondGIFNext = () => setStage(5);
@@ -126,8 +117,8 @@ export default function Sorry() {
       {/* Stage 0: Disclaimer */}
       {stage === 0 && (
         <div className={styles.tile}>
-          <h2>Disclaimer</h2>
-          <p>Please read this carefully before proceeding.</p>
+          <h2 className={styles.tileTitle}>Disclaimer</h2>
+          <p className={styles.tileText}>Please read this carefully before proceeding.</p>
           <div className={styles.checkboxGroup}>
             <label>
               <input type="checkbox" disabled={!checkbox1Enabled} checked={checkbox1} onChange={e => setCheckbox1(e.target.checked)} />
@@ -143,8 +134,8 @@ export default function Sorry() {
             </label>
           </div>
           <div className={styles.buttonGroup}>
-            <button onClick={handleDisclaimerProceed} disabled={!(checkbox1 && checkbox2 && checkbox3)}>Proceed</button>
-            <button onClick={handleCancel}>Cancel & Go to Chat</button>
+            <button className={styles.button} onClick={handleDisclaimerProceed} disabled={!(checkbox1 && checkbox2 && checkbox3)}>Proceed</button>
+            <button className={styles.button} onClick={handleCancel}>Cancel & Go to Chat</button>
           </div>
         </div>
       )}
@@ -152,14 +143,14 @@ export default function Sorry() {
       {/* Stage 1: GIFs */}
       {stage === 1 && (
         <div className={styles.tile}>
-          <h2>Enjoy these GIFs</h2>
+          <h2 className={styles.tileTitle}>Enjoy these GIFs</h2>
           <div className={styles.gifContainer}>
             {gifs.map((gif, i) => (
               <Image key={i} src={gif} alt={`gif-${i}`} width={150} height={150} unoptimized />
             ))}
           </div>
           <div className={styles.buttonGroup}>
-            <button onClick={handleNextGIFs}>Next</button>
+            <button className={styles.button} onClick={handleNextGIFs}>Next</button>
           </div>
         </div>
       )}
@@ -167,10 +158,10 @@ export default function Sorry() {
       {/* Stage 2: Questions */}
       {stage === 2 && (
         <div className={styles.tile}>
-          <h2>Questions</h2>
+          <h2 className={styles.tileTitle}>Questions</h2>
           {currentQuestionImages.map((img, index) => (
             <div key={index} className={styles.questionTile}>
-              <p>Question {index + 1}</p>
+              <p className={styles.tileText}>Question {index + 1}</p>
               <Image src={img} alt={`question-${index}`} width={300} height={300} unoptimized />
               <div className={styles.checkboxGroup}>
                 <label>
@@ -180,11 +171,11 @@ export default function Sorry() {
                   <input type="radio" name={`q${index}`} onChange={() => handleQuestionAnswer(index, 'no')} /> No
                 </label>
               </div>
-              <button onClick={() => handleShowQuestion(index)}>Show Question</button>
+              <button className={styles.button} onClick={() => handleShowQuestion(index)}>Show Question</button>
             </div>
           ))}
           <div className={styles.buttonGroup}>
-            <button onClick={handleQuestionsNext} disabled={!nextEnabled}>Next</button>
+            <button className={styles.button} onClick={handleQuestionsNext} disabled={!nextEnabled}>Next</button>
           </div>
           {!nextEnabled && <p style={{ fontSize: '0.8rem' }}>Enabled in {nextCooldown} seconds</p>}
         </div>
@@ -193,12 +184,12 @@ export default function Sorry() {
       {/* Stage 3: Video */}
       {stage === 3 && (
         <div className={styles.tile}>
-          <h2>Watch this Video</h2>
+          <h2 className={styles.tileTitle}>Watch this Video</h2>
           <div className={styles.videoContainer}>
             <video src="https://www.w3schools.com/html/mov_bbb.mp4" controls autoPlay />
           </div>
           <div className={styles.buttonGroup}>
-            <button onClick={handleVideoNext} disabled={!videoNextEnabled}>Next</button>
+            <button className={styles.button} onClick={handleVideoNext} disabled={!videoNextEnabled}>Next</button>
           </div>
           {!videoNextEnabled && <p style={{ fontSize: '0.8rem' }}>Enabled in {videoCooldown} seconds</p>}
         </div>
@@ -207,14 +198,14 @@ export default function Sorry() {
       {/* Stage 4: Second GIFs */}
       {stage === 4 && (
         <div className={styles.tile}>
-          <h2>Enjoy More GIFs</h2>
+          <h2 className={styles.tileTitle}>Enjoy More GIFs</h2>
           <div className={styles.gifContainer}>
             {gifs.map((gif, i) => (
               <Image key={i} src={gif} alt={`gif2-${i}`} width={150} height={150} unoptimized />
             ))}
           </div>
           <div className={styles.buttonGroup}>
-            <button onClick={handleSecondGIFNext}>Next</button>
+            <button className={styles.button} onClick={handleSecondGIFNext}>Next</button>
           </div>
         </div>
       )}
@@ -222,10 +213,10 @@ export default function Sorry() {
       {/* Stage 5: Final Note */}
       {stage === 5 && (
         <div className={styles.tile}>
-          <h2>Editor&apos;s Note</h2>
-          <p>This is an important editor&apos;s note.</p>
+          <h2 className={styles.tileTitle}>Editor&apos;s Note</h2>
+          <p className={styles.tileText}>This is an important editor&apos;s note.</p>
           <div className={styles.buttonGroup}>
-            <button onClick={handleFinalProceed}>Proceed to Chat</button>
+            <button className={styles.button} onClick={handleFinalProceed}>Proceed to Chat</button>
           </div>
         </div>
       )}
