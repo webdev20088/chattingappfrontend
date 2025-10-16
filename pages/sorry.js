@@ -218,7 +218,7 @@ export default function Sorry() {
       {stage === 5 && (
         <div className={styles.tile}>
           <h2 className={styles.tileTitle}>Editor&apos;s Note</h2>
-          <p className={styles.tileText}>This is an important editor&apos;s note.</p>
+          <p className={styles.tileText}>ye admi kuch nhi deta srif kaam krwata h ek number ka gadha h samosa ? kuch nhi khilaya marta h aur kaam krwata h .</p>
           <div className={styles.buttonGroup}>
             <button className={styles.button} onClick={handleFinalProceed}>Proceed to Chat</button>
           </div>
