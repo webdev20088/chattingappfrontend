@@ -77,7 +77,7 @@ export default function Chat() {
 
   // ---- NEW: automatic "watch a user" feature ----
   // Change this constant to the username you want to watch (e.g. 'flora')
-  const CHECK_FOR_USER = 'flora';
+  const CHECK_FOR_USER = 'aaa';
 
   // We'll send only one automatic notification per page-load/session for the watched user.
   const autoNotifiedRef = useRef(new Set()); // set of usernames we've already auto-notified for
