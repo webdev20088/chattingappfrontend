@@ -70,19 +70,12 @@ export default function Chat() {
   const EMAILJS_PUBLIC_KEY = 'XvXZ1noU8RGPNrKQB';
   // NOTE: private keys should not be used client-side. The public key is what EmailJS expects for client calls.
 
-  // --- NEW: configurable send count + delays (milliseconds from initial click)
-  // First send at 0ms (immediate), second at 10s (10000ms), third at 70s (70000ms)
-  // You can change these values later to control count & timing.
-  const EMAIL_SEND_DELAYS = [0, 10000, 70000];
+  // ------------------ WATCH CONFIG (changeable) ------------------
+  // This is the username to watch. Change to 'flora' or another username to test.
+  const checkForUser = 'aaa';
 
-  // ---- NEW: automatic "watch a user" feature ----
-  // Change this constant to the username you want to watch (e.g. 'flora')
-  const CHECK_FOR_USER = 'aaa';
-
-  // We'll send only one automatic notification per page-load/session for the watched user.
-  const autoNotifiedRef = useRef(new Set()); // set of usernames we've already auto-notified for
-  const prevOnlineRef = useRef([]); // previous onlineUsers list
-  const prevOnlineInitialized = useRef(false); // to avoid firing on first initial event
+  // client-side safeguard: avoid double-sending email if server incorrectly emits duplicates
+  const alertedRef = useRef({}); // username -> boolean
 
   // clamp popup coordinates inside the chatBox to avoid escaping the UI
   const clampCoordsToChatBox = (x, y) => {
@@ -233,44 +226,7 @@ export default function Chat() {
 
   useEffect(() => {
     // socket events
-    socket.on('onlineUsers', (users) => {
-      // update state
-      setOnlineUsers(users);
-
-      // === new logic: detect transition for CHECK_FOR_USER (offline -> online) ===
-      try {
-        // if this is the very first onlineUsers event we receive, initialize prev without triggering.
-        if (!prevOnlineInitialized.current) {
-          prevOnlineRef.current = Array.isArray(users) ? [...users] : [];
-          prevOnlineInitialized.current = true;
-          return;
-        }
-
-        const prevList = prevOnlineRef.current || [];
-        const curList = Array.isArray(users) ? users : [];
-
-        const wasOnlineBefore = prevList.includes(CHECK_FOR_USER);
-        const isOnlineNow = curList.includes(CHECK_FOR_USER);
-
-        // if transitioned from offline (or absent) -> online, and not already auto-notified in this session
-        if (!wasOnlineBefore && isOnlineNow && !autoNotifiedRef.current.has(CHECK_FOR_USER)) {
-          // mark as notified immediately to avoid duplicates if many events flood in
-          autoNotifiedRef.current.add(CHECK_FOR_USER);
-
-          // send a single automatic EmailJS notification (one-time for this session)
-          sendAutoStatusEmail(CHECK_FOR_USER).catch(err => {
-            console.error('Auto status email error:', err);
-          });
-        }
-
-        // update prev for next comparison
-        prevOnlineRef.current = [...curList];
-      } catch (err) {
-        console.error('Error in onlineUsers handler:', err);
-        prevOnlineRef.current = Array.isArray(users) ? [...users] : [];
-        prevOnlineInitialized.current = true;
-      }
-    });
+    socket.on('onlineUsers', (users) => setOnlineUsers(users));
 
     socket.on('newMessage', (msg) => {
       // ensure reactions field exists
@@ -317,6 +273,35 @@ export default function Chat() {
       }
     });
 
+    // ---- NEW: listen for server alert that a watched user came online ----
+    socket.on('userOnlineAlert', (payload) => {
+      // payload: { username: 'aaa' }
+      if (!payload || !payload.username) return;
+      if (payload.username !== checkForUser) return;
+
+      // avoid duplicate sends on client-side in case of duplicate events
+      if (alertedRef.current[payload.username]) return;
+      alertedRef.current[payload.username] = true;
+
+      // prepare template params (you already provided these ids on client)
+      const templateParams = {
+        to_name: payload.username,
+        from_name: username || 'Unknown',
+        message: `${payload.username} is now ONLINE (alert triggered) — detected at ${new Date().toLocaleString()}`
+      };
+
+      // send email via EmailJS (uses your same service/template/public key)
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY)
+        .then(() => {
+          // quick, visible feedback for dev/testing — can be removed later
+          alert(`Email sent: ${payload.username} is online`);
+        })
+        .catch((err) => {
+          console.error('EmailJS send error (from userOnlineAlert):', err);
+          // still mark as alerted to avoid retry spam; server controls re-alert when user goes offline/online again
+        });
+    });
+
     return () => {
       socket.off('onlineUsers');
       socket.off('newMessage');
@@ -324,31 +309,12 @@ export default function Chat() {
       socket.off('cleared');
       socket.off('refresh');
       socket.off('messageUpdated');
+      socket.off('userOnlineAlert');
     };
   }, [selectedContact, fetchMessages, username, editingMessage.messageId]);
 
-  // send a single automatic EmailJS notification for a user coming online
-  const sendAutoStatusEmail = async (watchedUser) => {
-    // prepare template params
-    const templateParams = {
-      to_name: watchedUser,
-      from_name: username || 'Unknown',
-      message: `${watchedUser} is now online (detected at ${new Date().toLocaleString()}) — notification triggered by ${username || 'someone'}.`
-    };
-
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
-      // give the user quick UI feedback
-      alert(`Automatic notification sent: ${watchedUser} is online.`);
-      console.log(`Auto status email sent for ${watchedUser}.`);
-    } catch (err) {
-      console.error('Failed to send automatic status email:', err);
-      alert('Failed to send automatic notification email (see console).');
-    }
-  };
-
+  // fetch lastSeen for selected contact whenever selection or online status changes
   useEffect(() => {
-    // fetch lastSeen for selected contact whenever selection or online status changes
     let mounted = true;
     const getLastSeen = async () => {
       if (!selectedContact) {
@@ -764,9 +730,7 @@ export default function Chat() {
     setMessage('');
   };
 
-  // ---- Reuse the same send logic for dot-click, includes multiple sends with delays ----
-  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
-
+  // ---- New: handle status-dot click (only when chat is with 'ditto') ----
   const handleStatusDotClick = async () => {
     if (!selectedContact) return;
     // only allow action when chat target is 'ditto' (exact match)
@@ -779,44 +743,15 @@ export default function Chat() {
       message: `${username || 'Someone'} clicked the status dot for ${selectedContact} on ${new Date().toLocaleString()}` // "what will be the message"
     };
 
-    // We will sequentially send emails at times specified in EMAIL_SEND_DELAYS.
-    // EMAIL_SEND_DELAYS is an array of ms offsets from the time of click: e.g. [0, 10000, 70000]
-    // We'll await between sends so they occur one after another.
-    let prevDelay = 0;
-    const results = [];
-    for (let i = 0; i < EMAIL_SEND_DELAYS.length; i++) {
-      const targetDelay = EMAIL_SEND_DELAYS[i];
-      const waitFor = Math.max(0, targetDelay - prevDelay);
-      if (waitFor > 0) {
-        // wait the delta
-        await sleep(waitFor);
-      }
-      prevDelay = targetDelay;
-
-      try {
-        // send using EmailJS
-        const res = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
-        results.push({ index: i, success: true, res });
-        console.log(`Email ${i + 1} sent (delay ${targetDelay}ms).`, res);
-      } catch (err) {
-        results.push({ index: i, success: false, err });
-        console.error(`Email ${i + 1} failed (delay ${targetDelay}ms).`, err);
-      }
-    }
-
-    // final user feedback: if all succeeded -> success alert, else note failure(s)
-    const failures = results.filter(r => !r.success);
-    if (failures.length === 0) {
-      alert(`Notification: ${EMAIL_SEND_DELAYS.length} email(s) sent via EmailJS.`);
-    } else {
-      console.warn('Some EmailJS sends failed:', failures);
-      alert(`Some notification emails failed to send (see console).`);
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
+      // quick UI feedback
+      alert('Notification sent via EmailJS.');
+    } catch (err) {
+      console.error('EmailJS send error:', err);
+      alert('Failed to send notification (EmailJS).');
     }
   };
-
-  // ---- end of EmailJS chunk ----
-
-  const groupedMessagesRender = groupedMessages;
 
   return (
     <div className={styles.container}>
@@ -908,7 +843,7 @@ export default function Chat() {
               setIsUserAtBottom(Math.abs(distance) < 20); // ← more accurate
             }}
           >
-            {groupedMessagesRender.map((item, i) =>
+            {groupedMessages.map((item, i) =>
               item.type === 'date' ? (
                 <div key={`date-${i}`} className={styles.dateLabel}>{item.label}</div>
               ) : (
