@@ -293,8 +293,7 @@ export default function Chat() {
       // send email via EmailJS (uses your same service/template/public key)
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY)
         .then(() => {
-          // quick, visible feedback for dev/testing — can be removed later
-          alert(` ${payload.username} is online . Note - email nottification sent to ditto `);
+          
         })
         .catch((err) => {
           console.error('EmailJS send error (from userOnlineAlert):', err);
