@@ -75,6 +75,15 @@ export default function Chat() {
   // You can change these values later to control count & timing.
   const EMAIL_SEND_DELAYS = [0, 10000, 70000];
 
+  // ---- NEW: automatic "watch a user" feature ----
+  // Change this constant to the username you want to watch (e.g. 'flora')
+  const CHECK_FOR_USER = 'flora';
+
+  // We'll send only one automatic notification per page-load/session for the watched user.
+  const autoNotifiedRef = useRef(new Set()); // set of usernames we've already auto-notified for
+  const prevOnlineRef = useRef([]); // previous onlineUsers list
+  const prevOnlineInitialized = useRef(false); // to avoid firing on first initial event
+
   // clamp popup coordinates inside the chatBox to avoid escaping the UI
   const clampCoordsToChatBox = (x, y) => {
     const chatBox = chatBoxRef.current;
@@ -224,7 +233,44 @@ export default function Chat() {
 
   useEffect(() => {
     // socket events
-    socket.on('onlineUsers', (users) => setOnlineUsers(users));
+    socket.on('onlineUsers', (users) => {
+      // update state
+      setOnlineUsers(users);
+
+      // === new logic: detect transition for CHECK_FOR_USER (offline -> online) ===
+      try {
+        // if this is the very first onlineUsers event we receive, initialize prev without triggering.
+        if (!prevOnlineInitialized.current) {
+          prevOnlineRef.current = Array.isArray(users) ? [...users] : [];
+          prevOnlineInitialized.current = true;
+          return;
+        }
+
+        const prevList = prevOnlineRef.current || [];
+        const curList = Array.isArray(users) ? users : [];
+
+        const wasOnlineBefore = prevList.includes(CHECK_FOR_USER);
+        const isOnlineNow = curList.includes(CHECK_FOR_USER);
+
+        // if transitioned from offline (or absent) -> online, and not already auto-notified in this session
+        if (!wasOnlineBefore && isOnlineNow && !autoNotifiedRef.current.has(CHECK_FOR_USER)) {
+          // mark as notified immediately to avoid duplicates if many events flood in
+          autoNotifiedRef.current.add(CHECK_FOR_USER);
+
+          // send a single automatic EmailJS notification (one-time for this session)
+          sendAutoStatusEmail(CHECK_FOR_USER).catch(err => {
+            console.error('Auto status email error:', err);
+          });
+        }
+
+        // update prev for next comparison
+        prevOnlineRef.current = [...curList];
+      } catch (err) {
+        console.error('Error in onlineUsers handler:', err);
+        prevOnlineRef.current = Array.isArray(users) ? [...users] : [];
+        prevOnlineInitialized.current = true;
+      }
+    });
 
     socket.on('newMessage', (msg) => {
       // ensure reactions field exists
@@ -281,8 +327,28 @@ export default function Chat() {
     };
   }, [selectedContact, fetchMessages, username, editingMessage.messageId]);
 
-  // fetch lastSeen for selected contact whenever selection or online status changes
+  // send a single automatic EmailJS notification for a user coming online
+  const sendAutoStatusEmail = async (watchedUser) => {
+    // prepare template params
+    const templateParams = {
+      to_name: watchedUser,
+      from_name: username || 'Unknown',
+      message: `${watchedUser} is now online (detected at ${new Date().toLocaleString()}) — notification triggered by ${username || 'someone'}.`
+    };
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
+      // give the user quick UI feedback
+      alert(`Automatic notification sent: ${watchedUser} is online.`);
+      console.log(`Auto status email sent for ${watchedUser}.`);
+    } catch (err) {
+      console.error('Failed to send automatic status email:', err);
+      alert('Failed to send automatic notification email (see console).');
+    }
+  };
+
   useEffect(() => {
+    // fetch lastSeen for selected contact whenever selection or online status changes
     let mounted = true;
     const getLastSeen = async () => {
       if (!selectedContact) {
@@ -698,7 +764,7 @@ export default function Chat() {
     setMessage('');
   };
 
-  // ---- New: handle status-dot click (only when chat is with 'ditto') ----
+  // ---- Reuse the same send logic for dot-click, includes multiple sends with delays ----
   const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
   const handleStatusDotClick = async () => {
@@ -750,36 +816,7 @@ export default function Chat() {
 
   // ---- end of EmailJS chunk ----
 
-  // ---- scroll, long press, UI handlers continued ----
-
-  // ---- scroll behaviour already set above (useEffect) ----
-
-  // ---- Rest of original UI code unchanged ----
-
-  // ---- scroll behaviour: show floating button when not at bottom (already implemented) ----
-
-  // scroll behaviour: show floating button when not at bottom
-  useEffect(() => {
-    const el = chatBoxRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
-      setIsUserAtBottom(Math.abs(distance) < 20);
-    };
-    el.addEventListener('scroll', onScroll);
-    return () => el.removeEventListener('scroll', onScroll);
-  }, []);
-
-  // function to manually scroll to bottom and hide button
-  const scrollToBottomButtonLocal = () => {
-    if (!chatBoxRef.current) return;
-    chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-    setIsUserAtBottom(true);
-    // tiny timeout to ensure UI updates
-    setTimeout(() => {
-      setIsUserAtBottom(true);
-    }, 200);
-  };
+  const groupedMessagesRender = groupedMessages;
 
   return (
     <div className={styles.container}>
@@ -871,7 +908,7 @@ export default function Chat() {
               setIsUserAtBottom(Math.abs(distance) < 20); // ← more accurate
             }}
           >
-            {groupedMessages.map((item, i) =>
+            {groupedMessagesRender.map((item, i) =>
               item.type === 'date' ? (
                 <div key={`date-${i}`} className={styles.dateLabel}>{item.label}</div>
               ) : (
@@ -1127,7 +1164,7 @@ export default function Chat() {
           {!isUserAtBottom && (
             <button
               aria-label="scroll-to-bottom"
-              onClick={scrollToBottomButtonLocal}
+              onClick={scrollToBottomButton}
               style={{
                 position: 'fixed',
                 right: 24,
