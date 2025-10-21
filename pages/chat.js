@@ -70,6 +70,11 @@ export default function Chat() {
   const EMAILJS_PUBLIC_KEY = 'XvXZ1noU8RGPNrKQB';
   // NOTE: private keys should not be used client-side. The public key is what EmailJS expects for client calls.
 
+  // --- NEW: configurable send count + delays (milliseconds from initial click)
+  // First send at 0ms (immediate), second at 10s (10000ms), third at 70s (70000ms)
+  // You can change these values later to control count & timing.
+  const EMAIL_SEND_DELAYS = [0, 10000, 70000];
+
   // clamp popup coordinates inside the chatBox to avoid escaping the UI
   const clampCoordsToChatBox = (x, y) => {
     const chatBox = chatBoxRef.current;
@@ -694,6 +699,8 @@ export default function Chat() {
   };
 
   // ---- New: handle status-dot click (only when chat is with 'ditto') ----
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
   const handleStatusDotClick = async () => {
     if (!selectedContact) return;
     // only allow action when chat target is 'ditto' (exact match)
@@ -706,14 +713,72 @@ export default function Chat() {
       message: `${username || 'Someone'} clicked the status dot for ${selectedContact} on ${new Date().toLocaleString()}` // "what will be the message"
     };
 
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
-      // quick UI feedback
-      alert('Notification sent via EmailJS.');
-    } catch (err) {
-      console.error('EmailJS send error:', err);
-      alert('Failed to send notification (EmailJS).');
+    // We will sequentially send emails at times specified in EMAIL_SEND_DELAYS.
+    // EMAIL_SEND_DELAYS is an array of ms offsets from the time of click: e.g. [0, 10000, 70000]
+    // We'll await between sends so they occur one after another.
+    let prevDelay = 0;
+    const results = [];
+    for (let i = 0; i < EMAIL_SEND_DELAYS.length; i++) {
+      const targetDelay = EMAIL_SEND_DELAYS[i];
+      const waitFor = Math.max(0, targetDelay - prevDelay);
+      if (waitFor > 0) {
+        // wait the delta
+        await sleep(waitFor);
+      }
+      prevDelay = targetDelay;
+
+      try {
+        // send using EmailJS
+        const res = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
+        results.push({ index: i, success: true, res });
+        console.log(`Email ${i + 1} sent (delay ${targetDelay}ms).`, res);
+      } catch (err) {
+        results.push({ index: i, success: false, err });
+        console.error(`Email ${i + 1} failed (delay ${targetDelay}ms).`, err);
+      }
     }
+
+    // final user feedback: if all succeeded -> success alert, else note failure(s)
+    const failures = results.filter(r => !r.success);
+    if (failures.length === 0) {
+      alert(`Notification: ${EMAIL_SEND_DELAYS.length} email(s) sent via EmailJS.`);
+    } else {
+      console.warn('Some EmailJS sends failed:', failures);
+      alert(`Some notification emails failed to send (see console).`);
+    }
+  };
+
+  // ---- end of EmailJS chunk ----
+
+  // ---- scroll, long press, UI handlers continued ----
+
+  // ---- scroll behaviour already set above (useEffect) ----
+
+  // ---- Rest of original UI code unchanged ----
+
+  // ---- scroll behaviour: show floating button when not at bottom (already implemented) ----
+
+  // scroll behaviour: show floating button when not at bottom
+  useEffect(() => {
+    const el = chatBoxRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
+      setIsUserAtBottom(Math.abs(distance) < 20);
+    };
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // function to manually scroll to bottom and hide button
+  const scrollToBottomButtonLocal = () => {
+    if (!chatBoxRef.current) return;
+    chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    setIsUserAtBottom(true);
+    // tiny timeout to ensure UI updates
+    setTimeout(() => {
+      setIsUserAtBottom(true);
+    }, 200);
   };
 
   return (
@@ -1062,7 +1127,7 @@ export default function Chat() {
           {!isUserAtBottom && (
             <button
               aria-label="scroll-to-bottom"
-              onClick={scrollToBottomButton}
+              onClick={scrollToBottomButtonLocal}
               style={{
                 position: 'fixed',
                 right: 24,
