@@ -72,7 +72,7 @@ export default function Chat() {
 
   // ------------------ WATCH CONFIG (changeable) ------------------
   // This is the username to watch. Change to 'flora' or another username to test.
-  const checkForUser = 'aaa';
+  const checkForUser = 'flora';
 
   // client-side safeguard: avoid double-sending email if server incorrectly emits duplicates
   const alertedRef = useRef({}); // username -> boolean
