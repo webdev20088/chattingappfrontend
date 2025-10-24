@@ -35,11 +35,11 @@
   object-fit: cover;
 }
 
-.videoSection h1 {
+.videoSection h3 {
   position: relative;
   z-index: 1;
-  color: white;
-  font-size: 4rem;
+  color: black;
+  font-size: 2rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
