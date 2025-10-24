@@ -16,7 +16,7 @@
   font-weight: bold;
 }
 .videoSection {
-  width: 100%;
+  width: 95%;
   height: 100vh;
   position: relative;
   display: flex;
@@ -39,7 +39,7 @@
   position: relative;
   z-index: 1;
   color: black;
-  font-size: 2rem;
+  font-size: 3rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
