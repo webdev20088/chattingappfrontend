@@ -44,7 +44,7 @@ export default function Login() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>JEE Main & Advanced MCQ Portal</header>
+      <header className={styles.header}>JEE Main & Advanced Practice Sets</header>
       <nav className={styles.nav}>
         <span>Home</span>
         <span>Mock Test</span>
@@ -61,10 +61,16 @@ export default function Login() {
   <h3>Practice. Prepare. Excel</h3>
 
 </div>
+
+<div className={styles.marquee}>
+  <div className={styles.marqueeContent}>
+    ⚡Free practice MCQs curated from 20 years of JEE Mains & Advanced with subject-wise and topic-wise organization.⚡
+  </div>
+</div>
+
       <main className={styles.mainContent}>
         <section className={styles.heroText}>
-          <h1>JEE Main MCQ Practice Sets</h1>
-          <p>Free practice MCQs curated from 20 years of JEE Mains & Advanced with subject-wise and topic-wise organization.</p>
+         
         </section>
 
         <section className={styles.sections}>
