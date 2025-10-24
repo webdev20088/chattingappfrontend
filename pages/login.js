@@ -52,7 +52,7 @@ export default function Login() {
         <span>Chapter-wise MCQs</span>
         <span>JEE Adv PYQs</span>
       </nav>
-      <br><br></br></br>
+    
     <div className={styles.videoSection}>
   <video autoPlay loop muted>
     <source src="https://www.pexels.com/download/video/4778793/" type="video/mp4" />
