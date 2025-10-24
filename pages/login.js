@@ -182,20 +182,107 @@ export default function Login() {
             </ul>
           </div>
 
-          {[...Array(5)].map((_, index) => {
-            const num = index + 11;
-            return (
-              <div className={styles.questionBlock} key={num}>
-                <p><strong>Q{num}:</strong> More questions will be added here #{num}</p>
-                <ul>
-                  <li>(A) Option A</li>
-                  <li>(B) Option B</li>
-                  <li>(C) Option C</li>
-                  <li>(D) Option D</li>
-                </ul>
-              </div>
-            );
-          })}
+          
+          <div className={styles.questionBlock}>
+            <p><strong>Q11:</strong> Which law states that the rate of diffusion of a gas is inversely proportional to the square root of its molar mass?</p>
+            <ul>
+              <li>(A) Boyle’s Law</li>
+              <li>(B) Graham’s Law</li>
+              <li>(C) Charles’ Law</li>
+              <li>(D) Dalton’s Law</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q12:</strong> What is the hybridization of carbon in ethyne (C₂H₂)?</p>
+            <ul>
+              <li>(A) sp</li>
+              <li>(B) sp²</li>
+              <li>(C) sp³</li>
+              <li>(D) dsp²</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q13:</strong> Which of the following elements shows the highest oxidation state?</p>
+            <ul>
+              <li>(A) Chromium</li>
+              <li>(B) Manganese</li>
+              <li>(C) Iron</li>
+              <li>(D) Cobalt</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q14:</strong> Which compound is used in the preparation of potassium dichromate (K₂Cr₂O₇)?</p>
+            <ul>
+              <li>(A) Chromite (FeCr₂O₄)</li>
+              <li>(B) Bauxite</li>
+              <li>(C) Haematite</li>
+              <li>(D) Magnesite</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q15:</strong> Which gas is liberated when zinc reacts with dilute hydrochloric acid?</p>
+            <ul>
+              <li>(A) Oxygen</li>
+              <li>(B) Hydrogen</li>
+              <li>(C) Chlorine</li>
+              <li>(D) Nitrogen</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q16:</strong> Which of the following has the highest boiling point?</p>
+            <ul>
+              <li>(A) H₂S</li>
+              <li>(B) H₂Se</li>
+              <li>(C) H₂O</li>
+              <li>(D) H₂Te</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q17:</strong> Which of the following is an example of a redox reaction?</p>
+            <ul>
+              <li>(A) AgNO₃ + NaCl → AgCl + NaNO₃</li>
+              <li>(B) Zn + CuSO₄ → ZnSO₄ + Cu</li>
+              <li>(C) HCl + NaOH → NaCl + H₂O</li>
+              <li>(D) NH₄Cl → NH₃ + HCl</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q18:</strong> The oxidation number of phosphorus in P₂O₅ is:</p>
+            <ul>
+              <li>(A) +3</li>
+              <li>(B) +4</li>
+              <li>(C) +5</li>
+              <li>(D) +2</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q19:</strong> Which of the following is the strongest acid?</p>
+            <ul>
+              <li>(A) H₂CO₃</li>
+              <li>(B) H₂SO₄</li>
+              <li>(C) H₃PO₄</li>
+              <li>(D) HNO₂</li>
+            </ul>
+          </div>
+
+          <div className={styles.questionBlock}>
+            <p><strong>Q20:</strong> Which compound is used as an antifreeze in automobile radiators?</p>
+            <ul>
+              <li>(A) Methanol</li>
+              <li>(B) Ethylene glycol</li>
+              <li>(C) Glycerol</li>
+              <li>(D) Propanol</li>
+            </ul>
+          </div>
+
         </section>
 
       </main>
