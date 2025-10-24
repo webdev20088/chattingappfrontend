@@ -60,6 +60,16 @@ export default function Login() {
         </section>
 
         <section className={styles.sections}>
+        
+<div className={styles.videoSection}>
+  <video autoPlay loop muted>
+    <source src="https://www.pexels.com/download/video/4778793/" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  <h1>Prepare with our questions</h1>
+  <h5>excel in exams</h5>
+</div>
+
           <h2>Why Practice With Us?</h2>
           <ul>
             <li>✓ 10,000+ curated MCQs from 2002 to 2024</li>
