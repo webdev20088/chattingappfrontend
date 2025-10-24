@@ -52,7 +52,14 @@ export default function Login() {
         <span>Chapter-wise MCQs</span>
         <span>JEE Adv PYQs</span>
       </nav>
+    <div className={styles.videoSection}>
+  <video autoPlay loop muted>
+    <source src="https://www.pexels.com/download/video/4778793/" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  <h3>Prepare with our questions</h3>
 
+</div>
       <main className={styles.mainContent}>
         <section className={styles.heroText}>
           <h1>JEE Main MCQ Practice Sets</h1>
@@ -61,14 +68,7 @@ export default function Login() {
 
         <section className={styles.sections}>
         
-<div className={styles.videoSection}>
-  <video autoPlay loop muted>
-    <source src="https://www.pexels.com/download/video/4778793/" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
-  <h1>Prepare with our questions</h1>
-  <h5>excel in exams</h5>
-</div>
+
 
           <h2>Why Practice With Us?</h2>
           <ul>
