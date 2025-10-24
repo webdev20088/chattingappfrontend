@@ -69,14 +69,7 @@ export default function Login() {
 </div>
 
       <main className={styles.mainContent}>
-        <section className={styles.heroText}>
-         
-        </section>
-
         <section className={styles.sections}>
-        
-
-
           <h2>Why Practice With Us?</h2>
           <ul>
             <li>✓ 10,000+ curated MCQs from 2002 to 2024</li>
