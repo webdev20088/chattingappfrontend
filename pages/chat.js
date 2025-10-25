@@ -1,3 +1,7 @@
+// please remmeber email js for this is working with account workaniketrajmandal7@gmail.com id ... open that in chrome to see quote 
+
+
+
 import { useEffect, useState, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css';
@@ -65,9 +69,9 @@ export default function Chat() {
   const defaultEmojis = ['👍', '❤️', '😊' ,'🙈', '🤐' , '👋' , '😭']; 
 
   // EmailJS configuration (provided)
-  const EMAILJS_SERVICE_ID = 'service_zvy2vyl';
-  const EMAILJS_TEMPLATE_ID = 'template_nf9pz38';
-  const EMAILJS_PUBLIC_KEY = 'XvXZ1noU8RGPNrKQB';
+  const EMAILJS_SERVICE_ID = 'service_15r8fcw';
+  const EMAILJS_TEMPLATE_ID = 'template_j3i2fi8';
+  const EMAILJS_PUBLIC_KEY = 'd0xSJhSya6WvobgmM';
   // NOTE: private keys should not be used client-side. The public key is what EmailJS expects for client calls.
 
   // ------------------ WATCH CONFIG (changeable) ------------------
